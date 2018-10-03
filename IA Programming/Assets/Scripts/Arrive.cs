@@ -7,6 +7,7 @@ public class Arrive : MonoBehaviour {
     public GameObject target;
     public float maxForce;
     public float maxSpeed;
+
     private float radius;
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;

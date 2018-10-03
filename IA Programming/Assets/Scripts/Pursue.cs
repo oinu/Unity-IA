@@ -29,9 +29,7 @@ public class Pursue : MonoBehaviour {
 
         desiredVelocity *= maxSpeed;
 
-        Vector3 velocity = this.transform.forward.normalized;
-
-        steeringForce = desiredVelocity;// - velocity;
+        steeringForce = desiredVelocity;
 
         steeringForce /= maxSpeed;
         steeringForce *= maxForce;

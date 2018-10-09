@@ -33,7 +33,7 @@ public class Predicted_Path_Following : MonoBehaviour {
             nodeList.Add(n);
         }
 
-        //If exist a node, move to them
+        //If exist a node, move to there
         if (nodeList.Count > 0)
         {
             //If is on the node position 

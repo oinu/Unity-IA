@@ -217,8 +217,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f1d212e5914754a92b1ae8bdb148b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 1410607393211590, guid: 20d56fe5c19c63441bfece779a0bef55, type: 2}
-  target: {fileID: 1397684010489684, guid: b3a838dc466169f47b1b2fed12b0f39f, type: 2}
+  terrainPrefab: {fileID: 1410607393211590, guid: 20d56fe5c19c63441bfece779a0bef55,
+    type: 2}
+  targetPrefab: {fileID: 1397684010489684, guid: b3a838dc466169f47b1b2fed12b0f39f,
+    type: 2}
+  pjPrefab: {fileID: 1175378330624022, guid: 38a3d823a1ed9d146affe785c6c4ba36, type: 2}
 --- !u!4 &660659160
 Transform:
   m_ObjectHideFlags: 0

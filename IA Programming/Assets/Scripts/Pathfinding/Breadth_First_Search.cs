@@ -19,7 +19,15 @@ public class Breadth_First_Search : MonoBehaviour {
     //The int will represents the currentCost of the node.
     private List<Position> fronter;
     private List<Position> visited;
+    private List<Position> path;
     private float timer;
+    private bool found;
+
+    //Movement of the Agent
+    public float maxForce;
+    public float maxSpeed;
+    private Vector3 desiredVelocity;
+    private Vector3 steeringForce;
 
 
 	// Use this for initialization
@@ -59,7 +67,7 @@ public class Breadth_First_Search : MonoBehaviour {
         pj.obj = GameObject.Instantiate<GameObject>(pjPrefab);
 
         //X position is 0 because the random range is -5 and 5.
-        pj.obj.transform.position = new Vector3(0, 0.75f, size/2);
+        pj.obj.transform.position = new Vector3(0.0f, 0.75f, size/2.0f);
         pj.x = 5;
         pj.z = 5;
 
@@ -70,8 +78,14 @@ public class Breadth_First_Search : MonoBehaviour {
 
         fronter = new List<Position>();
         visited = new List<Position>();
+        path = new List<Position>();
 
         visited.Add(area[pj.x, pj.z]);
+
+        area[pj.x + 1, pj.z].parent = area[pj.x, pj.z];
+        area[pj.x - 1, pj.z].parent = area[pj.x, pj.z];
+        area[pj.x, pj.z + 1].parent = area[pj.x, pj.z];
+        area[pj.x, pj.z - 1].parent = area[pj.x, pj.z];
 
         fronter.Add(area[pj.x, pj.z + 1]);
         fronter.Add(area[pj.x + 1, pj.z]);
@@ -79,6 +93,7 @@ public class Breadth_First_Search : MonoBehaviour {
         fronter.Add(area[pj.x - 1, pj.z]);
 
         timer = Time.deltaTime;
+        found = false;
         #endregion
 
     }
@@ -86,15 +101,11 @@ public class Breadth_First_Search : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        //Change the target position
-        if (Input.GetAxis("Jump") != 0)
-        {
-            //NewTargetPosition();
-        }
+        #region BREADTH FIRST SEARCH
         timer += Time.deltaTime;
 
         //Every second...
-        if(timer>1)
+        if(timer>1 && !found)
         {
             //Copy list
             List<Position> auxList = new List<Position>();
@@ -113,8 +124,24 @@ public class Breadth_First_Search : MonoBehaviour {
                     //If is the target location, we found it!
                     if (p.x == target.x && p.z == target.z)
                     {
-                        Debug.Log("FOUND!!");
+                        found = true;
                         auxList.Clear();
+                        Position current = p;
+                        Stack<Position> stack = new Stack<Position>();
+
+                        while(current.parent!=null)
+                        {
+                            stack.Push(current);
+                            current = current.parent;
+                        }
+
+                        int count = stack.Count;
+                        for(int i=0; i<count; i++)
+                        {
+                            path.Add(stack.Pop());
+                        }
+
+                        stack.Clear();
                         break;
                     }
                     else
@@ -124,14 +151,17 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
                             {
+                                area[p.x + 1, p.z].parent = p;
                                 auxList.Add(area[p.x + 1, p.z]);
                             }
                             if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
                             {
+                                area[p.x, p.z +1].parent = p;
                                 auxList.Add(area[p.x, p.z + 1]);
                             }
                             if (p.z > 0 && !area[p.x, p.z - 1].visited)
                             {
+                                area[p.x, p.z-1].parent = p;
                                 auxList.Add(area[p.x, p.z - 1]);
                             }
                         }
@@ -141,14 +171,17 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.x > 0 && !area[p.x - 1, p.z].visited)
                             {
+                                area[p.x - 1, p.z].parent = p;
                                 auxList.Add(area[p.x - 1, p.z]);
                             }
                             if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
                             {
+                                area[p.x, p.z + 1].parent = p;
                                 auxList.Add(area[p.x, p.z + 1]);
                             }
                             if (p.z > 0 && !area[p.x, p.z - 1].visited)
                             {
+                                area[p.x, p.z - 1].parent = p;
                                 auxList.Add(area[p.x, p.z - 1]);
                             }
                         }
@@ -158,10 +191,12 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
                             {
+                                area[p.x + 1, p.z].parent = p;
                                 auxList.Add(area[p.x + 1, p.z]);
                             }
                             if (p.x > 0 && !area[p.x - 1, p.z].visited)
                             {
+                                area[p.x - 1, p.z].parent = p;
                                 auxList.Add(area[p.x - 1, p.z]);
                             }
                         }
@@ -171,14 +206,17 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
                             {
+                                area[p.x, p.z + 1].parent = p;
                                 auxList.Add(area[p.x, p.z + 1]);
                             }
                             if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
                             {
+                                area[p.x + 1, p.z].parent = p;
                                 auxList.Add(area[p.x + 1, p.z]);
                             }
                             if (p.x > 0 && !area[p.x - 1, p.z].visited)
                             {
+                                area[p.x - 1, p.z].parent = p;
                                 auxList.Add(area[p.x - 1, p.z]);
                             }
                         }
@@ -188,14 +226,17 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.z > 0 && !area[p.x, p.z - 1].visited)
                             {
+                                area[p.x, p.z -1].parent = p;
                                 auxList.Add(area[p.x, p.z - 1]);
                             }
                             if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
                             {
+                                area[p.x + 1, p.z].parent = p;
                                 auxList.Add(area[p.x + 1, p.z]);
                             }
                             if (p.x > 0 && !area[p.x - 1, p.z].visited)
                             {
+                                area[p.x - 1, p.z].parent = p;
                                 auxList.Add(area[p.x - 1, p.z]);
                             }
                         }
@@ -205,10 +246,12 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
                             {
+                                area[p.x, p.z + 1].parent = p;
                                 auxList.Add(area[p.x, p.z + 1]);
                             }
                             if (p.z > 0 && !area[p.x, p.z - 1].visited)
                             {
+                                area[p.x, p.z - 1].parent = p;
                                 auxList.Add(area[p.x, p.z - 1]);
                             }
                         }
@@ -228,14 +271,50 @@ public class Breadth_First_Search : MonoBehaviour {
         //Paint the visited terrain with red color
         foreach (Position p in fronter)
         {
-            if(!p.visited)p.obj.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-            else p.obj.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+            p.obj.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
         }
 
         foreach (Position p in visited)
         {
             p.obj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
         }
+        #endregion
+
+        #region SIMPLE PATH FOLLOWING
+        foreach (Position p in path)
+        {
+            p.obj.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+        }
+
+        if (path.Count > 0)
+        {
+            Vector3 t = path[0].obj.transform.position;
+            t.y = 0.75f;
+            Vector3 p = pj.obj.transform.position;
+
+            if (Vector3.Distance(t, p) <= 0.1)
+            {
+                path.RemoveAt(0);
+            }
+            else
+            {
+                desiredVelocity = t - p;
+                desiredVelocity = desiredVelocity.normalized;
+                desiredVelocity *= maxSpeed;
+
+                steeringForce = desiredVelocity;
+
+                steeringForce /= maxSpeed;
+                steeringForce *= maxForce;
+                
+                pj.obj.transform.position = new Vector3(pj.obj.transform.position.x + steeringForce.x, pj.obj.transform.position.y, pj.obj.transform.position.z + steeringForce.z);
+
+                //The actual velocity is the forward;
+                pj.obj.transform.forward = desiredVelocity.normalized;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -253,7 +332,7 @@ public class Breadth_First_Search : MonoBehaviour {
     }
 }
 
-class Position : MonoBehaviour
+class Position
 {
     public int x, z;
     public GameObject obj;

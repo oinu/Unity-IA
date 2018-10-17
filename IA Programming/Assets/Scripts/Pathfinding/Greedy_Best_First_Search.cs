@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Breadth_First_Search : MonoBehaviour {
+public class Greedy_Best_First_Search : MonoBehaviour {
 
     //Creation of Scene
     public GameObject terrainPrefab;
@@ -30,31 +30,14 @@ public class Breadth_First_Search : MonoBehaviour {
     private Vector3 steeringForce;
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         #region CREATION SCENE
         size = 10;
         area = new Position[size, size];
 
-        //Creating the terrain with diferents cubes.
-        //Every cube have a property of the terrain (Weight, Cost, Distance, Color, etc).
-        for(int i=0; i<size; i++)
-        {
-            for(int j=0; j<size; j++)
-            {
-                area[i, j] = new Position();
-                area[i, j].obj = GameObject.Instantiate<GameObject>(terrainPrefab);
-                area[i, j].obj.transform.position = new Vector3(terrainPrefab.transform.lossyScale.x * i - size/2, 0, terrainPrefab.transform.lossyScale.z * j);
-                area[i, j].x = i;
-                area[i, j].z = j;
-                area[i, j].visited = false;
-
-                //Change the color of the cube
-                Color c = new Color(0.5f, 0.5f, 1);
-                area[i, j].obj.GetComponent<Renderer>().material.SetColor("_Color", c);
-            }
-        }
         //Instance a target
         target = new Position();
         target.obj = GameObject.Instantiate<GameObject>(targetPrefab);
@@ -62,12 +45,36 @@ public class Breadth_First_Search : MonoBehaviour {
         //Move to random position
         NewTargetPosition();
 
+        //Creating the terrain with diferents cubes.
+        //Every cube have a property of the terrain (Weight, Cost, Distance, Color, etc).
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                area[i, j] = new Position();
+                area[i, j].obj = GameObject.Instantiate<GameObject>(terrainPrefab);
+                area[i, j].obj.transform.position = new Vector3(terrainPrefab.transform.lossyScale.x * i - size / 2, 0, terrainPrefab.transform.lossyScale.z * j);
+                area[i, j].x = i;
+                area[i, j].z = j;
+                area[i, j].visited = false;
+
+                Vector3 t = target.obj.transform.position;
+                t.y = area[i, j].obj.transform.position.y;
+
+                area[i, j].heuristicCost = (int) Vector3.Distance(area[i, j].obj.transform.position, t);
+
+                //Change the color of the cube
+                Color c = new Color(0.5f, 0.5f, 1);
+                area[i, j].obj.GetComponent<Renderer>().material.SetColor("_Color", c);
+            }
+        }
+
         //Instance a PJ
         pj = new Position();
         pj.obj = GameObject.Instantiate<GameObject>(pjPrefab);
 
         //X position is 0 because the random range is -5 and 5.
-        pj.obj.transform.position = new Vector3(0.0f, 0.75f, size/2.0f);
+        pj.obj.transform.position = new Vector3(0.0f, 0.75f, size / 2.0f);
         pj.x = 5;
         pj.z = 5;
 
@@ -99,13 +106,14 @@ public class Breadth_First_Search : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
 
         #region BREADTH FIRST SEARCH
         timer += Time.deltaTime;
 
         //Every second...
-        if(timer>1 && !found)
+        if (timer > 1 && !found)
         {
             //Copy list
             List<Position> auxList = new List<Position>();
@@ -129,14 +137,14 @@ public class Breadth_First_Search : MonoBehaviour {
                         Position current = p;
                         Stack<Position> stack = new Stack<Position>();
 
-                        while(current.parent!=null)
+                        while (current.parent != null)
                         {
                             stack.Push(current);
                             current = current.parent;
                         }
 
                         int count = stack.Count;
-                        for(int i=0; i<count; i++)
+                        for (int i = 0; i < count; i++)
                         {
                             path.Add(stack.Pop());
                         }
@@ -156,12 +164,12 @@ public class Breadth_First_Search : MonoBehaviour {
                             }
                             if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
                             {
-                                area[p.x, p.z +1].parent = p;
+                                area[p.x, p.z + 1].parent = p;
                                 auxList.Add(area[p.x, p.z + 1]);
                             }
                             if (p.z > 0 && !area[p.x, p.z - 1].visited)
                             {
-                                area[p.x, p.z-1].parent = p;
+                                area[p.x, p.z - 1].parent = p;
                                 auxList.Add(area[p.x, p.z - 1]);
                             }
                         }
@@ -226,7 +234,7 @@ public class Breadth_First_Search : MonoBehaviour {
                         {
                             if (p.z > 0 && !area[p.x, p.z - 1].visited)
                             {
-                                area[p.x, p.z -1].parent = p;
+                                area[p.x, p.z - 1].parent = p;
                                 auxList.Add(area[p.x, p.z - 1]);
                             }
                             if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
@@ -266,7 +274,7 @@ public class Breadth_First_Search : MonoBehaviour {
 
             timer = Time.deltaTime;
         }
-        
+
 
         //Paint the visited terrain with red color
         foreach (Position p in fronter)
@@ -306,7 +314,7 @@ public class Breadth_First_Search : MonoBehaviour {
 
                 steeringForce /= maxSpeed;
                 steeringForce *= maxForce;
-                
+
                 pj.obj.transform.position = new Vector3(pj.obj.transform.position.x + steeringForce.x, pj.obj.transform.position.y, pj.obj.transform.position.z + steeringForce.z);
 
                 //The actual velocity is the forward;
@@ -325,45 +333,9 @@ public class Breadth_First_Search : MonoBehaviour {
         int randX = Random.Range(0, size);
         int randZ = Random.Range(0, size);
 
-        target.obj.transform.position = new Vector3(randX -size/2,
+        target.obj.transform.position = new Vector3(randX - size / 2,
             targetPrefab.transform.position.y, randZ);
         target.x = randX;
         target.z = randZ;
-    }
-}
-
-class Position
-{
-    public int x, z;
-    public GameObject obj;
-    public bool visited;
-    public Position parent;
-    public int heuristicCost;
-    public int costPosition;
-    public int acomulatedCost;
-
-    public Position()
-    {
-        x = 0;
-        z = 0;
-        obj = null;
-        visited = false;
-        parent = null;
-        heuristicCost = 0;
-        costPosition = 0;
-        acomulatedCost = 0;
-    }
-
-    public Position(int aX, int aZ, GameObject aObject)
-    {
-        x = aX;
-        z = aZ;
-        obj = aObject;
-
-        visited = false;
-        parent = null;
-        heuristicCost = 0;
-        costPosition = 0;
-        acomulatedCost = 0;
     }
 }

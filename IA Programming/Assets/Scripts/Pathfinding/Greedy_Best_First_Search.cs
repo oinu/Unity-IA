@@ -14,7 +14,7 @@ public class Greedy_Best_First_Search : MonoBehaviour {
     private Position pj;
     private int size;
 
-    //Breadth First Search
+    //Greedy Best First Search
     //Use a SortedList because the lowest cost will be the first
     //The int will represents the currentCost of the node.
     private List<Position> fronter;
@@ -81,7 +81,7 @@ public class Greedy_Best_First_Search : MonoBehaviour {
         area[pj.x, pj.z].visited = true;
         #endregion
 
-        #region BREADTH FIRST SEARCH
+        #region GREEDY BEST FIRST SEARCH
 
         fronter = new List<Position>();
         visited = new List<Position>();
@@ -98,6 +98,7 @@ public class Greedy_Best_First_Search : MonoBehaviour {
         fronter.Add(area[pj.x + 1, pj.z]);
         fronter.Add(area[pj.x, pj.z - 1]);
         fronter.Add(area[pj.x - 1, pj.z]);
+        HeuristicBubbleSort();
 
         timer = Time.deltaTime;
         found = false;
@@ -109,169 +110,167 @@ public class Greedy_Best_First_Search : MonoBehaviour {
     void Update()
     {
 
-        #region BREADTH FIRST SEARCH
+        #region GREEDY BEST FIRST SEARCH
         timer += Time.deltaTime;
 
         //Every second...
-        if (timer > 1 && !found)
+        if (timer > 1 && !found && fronter.Count>0)
         {
             //Copy list
             List<Position> auxList = new List<Position>();
 
             //Search all actually fronter nodes
-            foreach (Position p in fronter)
+            Position p = fronter[0];
+            //If the current node is not visited,
+            //find their neighbord and put in the fronter.
+            if (!p.visited)
             {
-                //If the current node is not visited,
-                //find their neighbord and put in the fronter.
-                if (!p.visited)
+                //We visiting the actual node, and add a visited list.
+                p.visited = true;
+                visited.Add(p);
+
+                //If is the target location, we found it!
+                if (p.x == target.x && p.z == target.z)
                 {
-                    //We visiting the actual node, and add a visited list.
-                    p.visited = true;
-                    visited.Add(p);
+                    found = true;
+                    auxList.Clear();
+                    Position current = p;
+                    Stack<Position> stack = new Stack<Position>();
 
-                    //If is the target location, we found it!
-                    if (p.x == target.x && p.z == target.z)
+                    while (current.parent != null)
                     {
-                        found = true;
-                        auxList.Clear();
-                        Position current = p;
-                        Stack<Position> stack = new Stack<Position>();
-
-                        while (current.parent != null)
-                        {
-                            stack.Push(current);
-                            current = current.parent;
-                        }
-
-                        int count = stack.Count;
-                        for (int i = 0; i < count; i++)
-                        {
-                            path.Add(stack.Pop());
-                        }
-
-                        stack.Clear();
-                        break;
+                        stack.Push(current);
+                        current = current.parent;
                     }
+
+                    int count = stack.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        path.Add(stack.Pop());
+                    }
+
+                    stack.Clear();
+                }
+                else
+                {
+                    //The current node is on the Left side
+                    if (p.x == 0)
+                    {
+                        if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
+                        {
+                            area[p.x + 1, p.z].parent = p;
+                            auxList.Add(area[p.x + 1, p.z]);
+                        }
+                        if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
+                        {
+                            area[p.x, p.z + 1].parent = p;
+                            auxList.Add(area[p.x, p.z + 1]);
+                        }
+                        if (p.z > 0 && !area[p.x, p.z - 1].visited)
+                        {
+                            area[p.x, p.z - 1].parent = p;
+                            auxList.Add(area[p.x, p.z - 1]);
+                        }
+                    }
+
+                    //The current node is on the Right side
+                    else if (p.x == size - 1)
+                    {
+                        if (p.x > 0 && !area[p.x - 1, p.z].visited)
+                        {
+                            area[p.x - 1, p.z].parent = p;
+                            auxList.Add(area[p.x - 1, p.z]);
+                        }
+                        if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
+                        {
+                            area[p.x, p.z + 1].parent = p;
+                            auxList.Add(area[p.x, p.z + 1]);
+                        }
+                        if (p.z > 0 && !area[p.x, p.z - 1].visited)
+                        {
+                            area[p.x, p.z - 1].parent = p;
+                            auxList.Add(area[p.x, p.z - 1]);
+                        }
+                    }
+
+                    //The current node is between Right and Left
                     else
                     {
-                        //The current node is on the Left side
-                        if (p.x == 0)
+                        if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
                         {
-                            if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
-                            {
-                                area[p.x + 1, p.z].parent = p;
-                                auxList.Add(area[p.x + 1, p.z]);
-                            }
-                            if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
-                            {
-                                area[p.x, p.z + 1].parent = p;
-                                auxList.Add(area[p.x, p.z + 1]);
-                            }
-                            if (p.z > 0 && !area[p.x, p.z - 1].visited)
-                            {
-                                area[p.x, p.z - 1].parent = p;
-                                auxList.Add(area[p.x, p.z - 1]);
-                            }
+                            area[p.x + 1, p.z].parent = p;
+                            auxList.Add(area[p.x + 1, p.z]);
                         }
-
-                        //The current node is on the Right side
-                        else if (p.x == size - 1)
+                        if (p.x > 0 && !area[p.x - 1, p.z].visited)
                         {
-                            if (p.x > 0 && !area[p.x - 1, p.z].visited)
-                            {
-                                area[p.x - 1, p.z].parent = p;
-                                auxList.Add(area[p.x - 1, p.z]);
-                            }
-                            if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
-                            {
-                                area[p.x, p.z + 1].parent = p;
-                                auxList.Add(area[p.x, p.z + 1]);
-                            }
-                            if (p.z > 0 && !area[p.x, p.z - 1].visited)
-                            {
-                                area[p.x, p.z - 1].parent = p;
-                                auxList.Add(area[p.x, p.z - 1]);
-                            }
+                            area[p.x - 1, p.z].parent = p;
+                            auxList.Add(area[p.x - 1, p.z]);
                         }
+                    }
 
-                        //The current node is between Right and Left
-                        else
+                    //The current node is on the Bottom (nearest at the camera)
+                    if (p.z == 0)
+                    {
+                        if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
                         {
-                            if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
-                            {
-                                area[p.x + 1, p.z].parent = p;
-                                auxList.Add(area[p.x + 1, p.z]);
-                            }
-                            if (p.x > 0 && !area[p.x - 1, p.z].visited)
-                            {
-                                area[p.x - 1, p.z].parent = p;
-                                auxList.Add(area[p.x - 1, p.z]);
-                            }
+                            area[p.x, p.z + 1].parent = p;
+                            auxList.Add(area[p.x, p.z + 1]);
                         }
-
-                        //The current node is on the Bottom (nearest at the camera)
-                        if (p.z == 0)
+                        if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
                         {
-                            if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
-                            {
-                                area[p.x, p.z + 1].parent = p;
-                                auxList.Add(area[p.x, p.z + 1]);
-                            }
-                            if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
-                            {
-                                area[p.x + 1, p.z].parent = p;
-                                auxList.Add(area[p.x + 1, p.z]);
-                            }
-                            if (p.x > 0 && !area[p.x - 1, p.z].visited)
-                            {
-                                area[p.x - 1, p.z].parent = p;
-                                auxList.Add(area[p.x - 1, p.z]);
-                            }
+                            area[p.x + 1, p.z].parent = p;
+                            auxList.Add(area[p.x + 1, p.z]);
                         }
-
-                        //The current node is on the Top (farest at the camera)
-                        else if (p.z == size - 1)
+                        if (p.x > 0 && !area[p.x - 1, p.z].visited)
                         {
-                            if (p.z > 0 && !area[p.x, p.z - 1].visited)
-                            {
-                                area[p.x, p.z - 1].parent = p;
-                                auxList.Add(area[p.x, p.z - 1]);
-                            }
-                            if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
-                            {
-                                area[p.x + 1, p.z].parent = p;
-                                auxList.Add(area[p.x + 1, p.z]);
-                            }
-                            if (p.x > 0 && !area[p.x - 1, p.z].visited)
-                            {
-                                area[p.x - 1, p.z].parent = p;
-                                auxList.Add(area[p.x - 1, p.z]);
-                            }
+                            area[p.x - 1, p.z].parent = p;
+                            auxList.Add(area[p.x - 1, p.z]);
                         }
+                    }
 
-                        //The current node is between the Top and the Bottom
-                        else
+                    //The current node is on the Top (farest at the camera)
+                    else if (p.z == size - 1)
+                    {
+                        if (p.z > 0 && !area[p.x, p.z - 1].visited)
                         {
-                            if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
-                            {
-                                area[p.x, p.z + 1].parent = p;
-                                auxList.Add(area[p.x, p.z + 1]);
-                            }
-                            if (p.z > 0 && !area[p.x, p.z - 1].visited)
-                            {
-                                area[p.x, p.z - 1].parent = p;
-                                auxList.Add(area[p.x, p.z - 1]);
-                            }
+                            area[p.x, p.z - 1].parent = p;
+                            auxList.Add(area[p.x, p.z - 1]);
+                        }
+                        if (p.x < size - 1 && !area[p.x + 1, p.z].visited)
+                        {
+                            area[p.x + 1, p.z].parent = p;
+                            auxList.Add(area[p.x + 1, p.z]);
+                        }
+                        if (p.x > 0 && !area[p.x - 1, p.z].visited)
+                        {
+                            area[p.x - 1, p.z].parent = p;
+                            auxList.Add(area[p.x - 1, p.z]);
+                        }
+                    }
+
+                    //The current node is between the Top and the Bottom
+                    else
+                    {
+                        if (p.z < size - 1 && !area[p.x, p.z + 1].visited)
+                        {
+                            area[p.x, p.z + 1].parent = p;
+                            auxList.Add(area[p.x, p.z + 1]);
+                        }
+                        if (p.z > 0 && !area[p.x, p.z - 1].visited)
+                        {
+                            area[p.x, p.z - 1].parent = p;
+                            auxList.Add(area[p.x, p.z - 1]);
                         }
                     }
                 }
-
-
             }
+
             //Clean the memory fronter and assign the auxList in there
             fronter.Clear();
             fronter = auxList;
 
+            //Order the nodes for heuristic cost
+            HeuristicBubbleSort();
             timer = Time.deltaTime;
         }
 
@@ -337,5 +336,56 @@ public class Greedy_Best_First_Search : MonoBehaviour {
             targetPrefab.transform.position.y, randZ);
         target.x = randX;
         target.z = randZ;
+    }
+
+    private void HeuristicBubbleSort()
+    {
+        //Create and Add in the index list the index of the current fronter
+        int[,] indexList = new int[fronter.Count,2];
+        for(int i=0; i <fronter.Count; i ++)
+        {
+            //First element is the heuristic cost and the second the index in the array.
+            indexList[i,0] = fronter[i].heuristicCost;
+            indexList[i, 1] = i;
+
+        }
+
+        //Bubble Sort
+        int index = 0;
+        for(int i=0; i< fronter.Count; i++)
+        {
+            index = i;
+            for( int j=i; j< fronter.Count; j++)
+            {
+                if(indexList[j,0]<indexList[index,0])
+                {
+                    index = j;
+                }
+            }
+
+            //If we find someone smaller than the current
+            //change it!
+            if(index!=i)
+            {
+                int auxIndex,auxValue;
+                auxValue = indexList[i, 0];
+                auxIndex = indexList[i, 1];
+
+                indexList[i, 0] = indexList[index, 0];
+                indexList[i, 1] = indexList[index, 1];
+
+                indexList[index, 0] = auxValue;
+                indexList[index, 1] = auxIndex;
+            }
+        }
+
+        //Create a auxiliar fronter list
+        List<Position> auxFronter = new List<Position>();
+        for(int i=0; i< fronter.Count; i++)
+        {
+            auxFronter.Add(fronter[indexList[i, 1]]);
+        }
+        fronter.Clear();
+        fronter = auxFronter;
     }
 }

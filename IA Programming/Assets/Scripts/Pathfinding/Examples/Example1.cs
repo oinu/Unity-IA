@@ -16,6 +16,9 @@ public class Example1 : MonoBehaviour {
     private List<NodeGraph> fronter;
     private List<NodeGraph> visited;
     private List<NodeGraph> path;
+    private NodeGraph target;
+    private bool found;
+
 	// Use this for initialization
 	void Start () {
 
@@ -53,15 +56,18 @@ public class Example1 : MonoBehaviour {
         visited = new List<NodeGraph>();
         path = new List<NodeGraph>();
 
-        path.Add(area[1]);
-        path.Add(area[0]);
-        path.Add(area[1]);
-        path.Add(area[2]);
-        path.Add(area[1]);
-        path.Add(area[4]);
-        path.Add(area[3]);
-        path.Add(area[4]);
-        path.Add(area[5]);
+        found = false;
+        target = area[1];
+
+        int index = 0;
+        for(int i =0; i <area.Length; i++)
+        {
+            if(Vector3.Distance(pj.transform.position,area[i])< Vector3.Distance(pj.transform.position, area[index]))
+            {
+                index = i;
+            }
+        }
+        fronter.Add(area[index]);
     }
 	
 	// Update is called once per frame
@@ -69,6 +75,28 @@ public class Example1 : MonoBehaviour {
         
         Movement();
 	}
+
+    private void PathFinding()
+    {
+        if(!found)
+        {
+            List<NodeGraph> auxList = new List<NodeGraph>();
+
+            foreach(NodeGraph p in fronter)
+            {
+                if(!p.visited)
+                {
+                    p.visited = true;
+                    visited.Add(p);
+
+                    if (p.position == target.position)
+                    {
+
+                    }
+                }
+            }
+        }
+    }
 
     private void Movement()
     {
@@ -110,6 +138,10 @@ public class NodeGraph
     public Vector3 position;
 
     public float heuristicCost;
+    public float weight;
+    public float acomulatedCost;
+
+    public bool visited;
 
     public NodeGraph()
     {
@@ -119,6 +151,9 @@ public class NodeGraph
         left = null;
         parent = null;
         heuristicCost = 0;
+        weight = 0;
+        acomulatedCost = 0;
+        visited = false;
         position = new Vector3();
     }
 }

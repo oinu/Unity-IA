@@ -313,34 +313,3 @@ public class Example1 : MonoBehaviour {
         NearestNodePJ();
     }
 }
-
-public class NodeGraph
-{
-    public NodeGraph top;
-    public NodeGraph right;
-    public NodeGraph bottom;
-    public NodeGraph left;
-    public NodeGraph parent;
-
-    public Vector3 position;
-
-    public float heuristicCost;
-    public float weight;
-    public float acomulatedCost;
-
-    public bool visited;
-
-    public NodeGraph()
-    {
-        top = null;
-        right = null;
-        bottom = null;
-        left = null;
-        parent = null;
-        heuristicCost = 0;
-        weight = 0;
-        acomulatedCost = 0;
-        visited = false;
-        position = new Vector3();
-    }
-}

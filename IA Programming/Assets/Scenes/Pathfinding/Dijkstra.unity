@@ -249,13 +249,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 973479715}
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -0.3, y: 7.06, z: -2.49}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0.3, y: 10, z: 4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1683383180
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,6 +288,10 @@ MonoBehaviour:
   targetPrefab: {fileID: 1397684010489684, guid: b3a838dc466169f47b1b2fed12b0f39f,
     type: 2}
   pjPrefab: {fileID: 1175378330624022, guid: 38a3d823a1ed9d146affe785c6c4ba36, type: 2}
+  nodePrefab: {fileID: 1061352504692318, guid: ad3de42b9585f8547ace1b0c552dce96, type: 2}
+  minWeight: 1
+  mediumWeight: 3
+  maxWeight: 10
   maxForce: 0.1
   maxSpeed: 10
 --- !u!4 &1683383182

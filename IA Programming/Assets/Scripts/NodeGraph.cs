@@ -32,7 +32,6 @@ public class NodeGraph
         acomulatedCost = 0;
         visited = false;
         position = new Vector3();
-        obj = new GameObject();
     }
 
     /// <summary>

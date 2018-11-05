@@ -12,9 +12,9 @@ public class NodeGraph
 
     public Vector3 position;
 
-    public float heuristicCost;
-    public float weight;
-    public float acomulatedCost;
+    public int heuristicCost;
+    public int weight;
+    public int acomulatedCost;
 
     public bool visited;
 

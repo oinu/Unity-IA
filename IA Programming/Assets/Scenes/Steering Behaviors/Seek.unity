@@ -353,7 +353,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4137035605788604, guid: 38a3d823a1ed9d146affe785c6c4ba36, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0.43
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 4137035605788604, guid: 38a3d823a1ed9d146affe785c6c4ba36, type: 2}
       propertyPath: m_LocalPosition.z
@@ -399,8 +399,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2141858598}
-  maxForce: 0.5
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 7
+  mass: 1
 --- !u!1 &2080597217 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1993481373231764, guid: 5f95669b6168e0f45b76fcbe44583f98,
@@ -418,8 +419,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1755539326}
-  maxForce: 0.5
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 7
+  mass: 5
 --- !u!1 &2101273418
 GameObject:
   m_ObjectHideFlags: 0

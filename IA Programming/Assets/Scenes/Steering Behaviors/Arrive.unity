@@ -130,8 +130,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1882852869}
-  maxForce: 0.1
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 5
+  mass: 1
 --- !u!1 &290283355
 GameObject:
   m_ObjectHideFlags: 0

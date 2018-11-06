@@ -7,21 +7,33 @@ public class Arrive : MonoBehaviour {
     public GameObject target;
     public float maxForce;
     public float maxSpeed;
+    public float mass;
 
     private float radius;
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
+    private Vector3 velocity;
+    private Vector3 position;
+    private Vector3 acceleration;
+    private Vector3 t;
 
     // Use this for initialization
     void Start()
     {
+        position = this.transform.position;
+        velocity = desiredVelocity = target.transform.position - this.transform.position;
+        velocity = velocity.normalized;
+        velocity.y = this.transform.forward.y;
+        this.transform.forward = velocity;
     }
 
     // Update is called once per frame
     void Update()
     {
         //Calculate the new vector. That will be the desired velocity
-        desiredVelocity = target.transform.position - this.transform.position;
+        t = target.transform.position;
+        t.y = position.y;
+        desiredVelocity = t - this.transform.position;
         desiredVelocity = desiredVelocity.normalized;
 
         //Getting the distance between the target and the agent position
@@ -48,17 +60,17 @@ public class Arrive : MonoBehaviour {
 
         desiredVelocity *= speed;
 
-        Vector3 velocity = this.transform.forward.normalized;
-
-        steeringForce = desiredVelocity;// - velocity;
+        steeringForce = desiredVelocity - velocity;
 
         steeringForce /= maxSpeed;
         steeringForce *= maxForce;
 
-        this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
-        
-        //The actual velocity is the forward;
-        this.transform.forward = desiredVelocity.normalized;
+        acceleration = steeringForce / mass;
+        velocity = velocity + acceleration * Time.deltaTime;
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        position += velocity * Time.deltaTime;
 
+        this.transform.position = position;
+        this.transform.forward = velocity.normalized;
     }
 }

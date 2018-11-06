@@ -7,25 +7,48 @@ public class Flee : MonoBehaviour {
     public GameObject target;
     public float maxForce;
     public float maxSpeed;
+    public float mass;
+
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
+    private Vector3 velocity;
+    private Vector3 position;
+    private Vector3 acceleration;
+    private Vector3 t;
 
     // Use this for initialization
     void Start()
     {
+        position = this.transform.position;
+        velocity = desiredVelocity = target.transform.position - this.transform.position;
+        velocity = velocity.normalized;
+        velocity.y = this.transform.forward.y;
+        this.transform.forward = velocity;
     }
 
     // Update is called once per frame
     void Update()
     {
-        desiredVelocity = this.transform.position - target.transform.position;
+        t = target.transform.position;
+        t.y = position.y;
 
-        this.transform.forward = desiredVelocity;
+        if (Vector3.Distance(t, position) > 0.1)
+        {
+            desiredVelocity = this.transform.position - t;
+            desiredVelocity = desiredVelocity.normalized;
+            desiredVelocity *= maxSpeed;
 
-        steeringForce = desiredVelocity;
-        steeringForce /= maxSpeed;
-        steeringForce *= maxForce;
+            steeringForce = desiredVelocity - velocity;
+            steeringForce /= maxSpeed;
+            steeringForce *= maxForce;
 
-        this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
+            acceleration = steeringForce / mass;
+            velocity = velocity + acceleration * Time.deltaTime;
+            velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+            position = position + velocity * Time.deltaTime;
+
+            this.transform.position = position;
+            this.transform.forward = velocity.normalized;
+        }
     }
 }

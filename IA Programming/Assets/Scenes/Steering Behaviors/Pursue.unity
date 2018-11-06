@@ -447,8 +447,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1211774298}
-  maxForce: 0.1
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 7
+  mass: 1
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1001 &1723709206
 Prefab:
   m_ObjectHideFlags: 0
@@ -508,5 +510,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1307889744}
-  maxForce: 0.01
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 2
+  mass: 1

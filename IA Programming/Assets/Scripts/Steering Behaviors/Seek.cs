@@ -11,7 +11,7 @@ public class Seek : MonoBehaviour {
 
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
-    private Vector3 velocity;
+    public Vector3 velocity;
     private Vector3 position;
     private Vector3 acceleration;
     private Vector3 t;

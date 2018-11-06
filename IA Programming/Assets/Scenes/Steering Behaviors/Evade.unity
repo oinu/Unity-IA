@@ -215,8 +215,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1316556848}
-  maxForce: 0.1
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 5
+  mass: 1
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &136878478 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1993481373231764, guid: 5f95669b6168e0f45b76fcbe44583f98,
@@ -234,8 +236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 24888162}
-  maxForce: 0.01
-  maxSpeed: 10
+  maxForce: 100
+  maxSpeed: 1
+  mass: 1
 --- !u!1 &194577175
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,9 +13,14 @@ public class Simple_Path_Following : MonoBehaviour {
     private Vector3 steeringForce;
     private List<GameObject> nodeList;
 
+    private Vector3 acceleration, velocity, position, t;
+    public float mass;
+
 	// Use this for initialization
 	void Start () {
         nodeList = new List<GameObject>();
+        velocity = this.transform.forward.normalized;
+        position = this.transform.position;
 	}
 	
 	// Update is called once per frame
@@ -41,19 +46,24 @@ public class Simple_Path_Following : MonoBehaviour {
             }
             else
             {
-                desiredVelocity = nodeList[0].transform.position - this.transform.position;
+                t = nodeList[0].transform.position;
+                t.y = position.y;
+
+                desiredVelocity = t - this.transform.position;
                 desiredVelocity = desiredVelocity.normalized;
                 desiredVelocity *= maxSpeed;
 
-                steeringForce = desiredVelocity;
+                steeringForce = desiredVelocity - velocity;
 
                 steeringForce /= maxSpeed;
                 steeringForce *= maxForce;
 
-                this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
+                acceleration = steeringForce / mass;
+                velocity += acceleration * Time.deltaTime;
+                position += velocity * Time.deltaTime;
 
-                //The actual velocity is the forward;
-                this.transform.forward = desiredVelocity.normalized;
+                this.transform.position = position;
+                this.transform.forward = velocity.normalized;
             }
         }
 	}

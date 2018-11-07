@@ -377,8 +377,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1782995359}
   node: {fileID: 1061352504692318, guid: ad3de42b9585f8547ace1b0c552dce96, type: 2}
-  maxForce: 0.1
+  maxForce: 100
   maxSpeed: 10
+  mass: 1
 --- !u!1 &1782995359 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1397684010489684, guid: b3a838dc466169f47b1b2fed12b0f39f,

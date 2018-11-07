@@ -10,9 +10,13 @@ public class Target_Move_Script : MonoBehaviour {
     private Vector3 desiredVelocity;
     private Vector3 target;
     private Vector3 steeringForce;
+    public float mass;
+
+    private Vector3 acceleration, velocity, position;
 	// Use this for initialization
 	void Start () {
-		
+        position = this.transform.position;
+        velocity = this.transform.forward.normalized;
 	}
 	
 	// Update is called once per frame
@@ -26,28 +30,26 @@ public class Target_Move_Script : MonoBehaviour {
         target.x -= Input.GetAxis("Horizontal");
         target.z -= Input.GetAxis("Vertical");
 
-        desiredVelocity = this.transform.position - target;
-        desiredVelocity = desiredVelocity.normalized;
-        desiredVelocity *= maxSpeed;
-
-        //If don't move, is not necessary change the forward.
-        //If i do, forward is 0.
-        if(this.transform.position!=target)
+        if (Vector3.Distance(position, target) > 0.1)
         {
-            this.transform.forward = desiredVelocity.normalized;
+
+            desiredVelocity = this.transform.position - target;
+            desiredVelocity = desiredVelocity.normalized;
+            desiredVelocity *= maxSpeed;
+
+            steeringForce = desiredVelocity - velocity;
+            steeringForce /= maxSpeed;
+            steeringForce *= maxForce;
+
+            acceleration = steeringForce / mass;
+            velocity += acceleration * Time.deltaTime;
+            position += velocity * Time.deltaTime;
+
+            this.transform.position = position;
+            this.transform.forward = velocity.normalized;
+
+            AreaAvoidance();
         }
-
-        //On the formula is desired velocity - velocity.
-        //In Unity is not necessary if change the forward vector.
-        steeringForce = desiredVelocity;
-        steeringForce /= maxSpeed;
-        steeringForce *= maxForce;
-
-        //Only increment the X and Z axis because i move the
-        //object like a 2D on a 3D world.
-        this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
-
-        AreaAvoidance();
         #endregion
     }
 

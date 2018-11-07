@@ -15,9 +15,12 @@ public class Comination1 : MonoBehaviour {
     public GameObject target;
     public float maxSpeed;
     public float maxForce;
+    public float mass;
 
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
+    private Vector3 acceleration, velocity, position, t;
+
 
     //Predicted Path Following
     public GameObject nodePrefab;
@@ -34,6 +37,9 @@ public class Comination1 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+        position = this.transform.position;
+        velocity = this.transform.forward;
 
         //Predicted Path Following inital variable
         nodeList = new List<GameObject>();
@@ -76,24 +82,32 @@ public class Comination1 : MonoBehaviour {
             }
             else
             {
-                Vector3 targetToSeek = Wander(nodeList[0].transform.position);
-                desiredVelocity = targetToSeek - this.transform.position;
-                desiredVelocity = desiredVelocity.normalized;
-                desiredVelocity *= maxSpeed;
+                t = nodeList[0].transform.position;
+                t.y = this.transform.position.y;
 
-                steeringForce = desiredVelocity;
+                if (Vector3.Distance(t, position) > 0.1)
+                {
+                    Vector3 targetToSeek = Wander(t);
+                    desiredVelocity = targetToSeek - this.transform.position;
+                    desiredVelocity = desiredVelocity.normalized;
+                    desiredVelocity *= maxSpeed;
 
-                steeringForce /= maxSpeed;
-                steeringForce *= maxForce;
+                    steeringForce = desiredVelocity - velocity;
 
-                this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
+                    steeringForce /= maxSpeed;
+                    steeringForce *= maxForce;
 
-                AreaAvoidance();
+                    acceleration = steeringForce * mass;
+                    velocity += acceleration * Time.deltaTime;
+                    position += velocity * Time.deltaTime;
 
-                PredictedPosition(new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z));
+                    this.transform.position = position;
+                    this.transform.forward = velocity.normalized;
 
-                //The actual velocity is the forward;
-                this.transform.forward = desiredVelocity.normalized;
+                    AreaAvoidance();
+
+                    PredictedPosition(position + velocity * Time.deltaTime);
+                }
             }
         }
     }

@@ -131,7 +131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   area: {fileID: 718271950}
   maxSpeed: 10
-  maxForce: 0.1
+  maxForce: 100
+  mass: 1
 --- !u!1 &57371514
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,8 +387,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   area: {fileID: 718271950}
   target: {fileID: 2432383}
-  maxSpeed: 10
-  maxForce: 0.05
+  maxSpeed: 5
+  maxForce: 100
+  mass: 1
   nodePrefab: {fileID: 1061352504692318, guid: ad3de42b9585f8547ace1b0c552dce96, type: 2}
 --- !u!1 &1565397387
 GameObject:

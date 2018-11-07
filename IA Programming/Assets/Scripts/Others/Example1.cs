@@ -14,6 +14,8 @@ public class Example1 : MonoBehaviour {
 
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
+    private Vector3 acceleration, velocity, position, t;
+    public float mass;
 
     private List<NodeGraph> fronter;
     private List<NodeGraph> visited;
@@ -87,6 +89,8 @@ public class Example1 : MonoBehaviour {
         lvl = 1;
 
         timer = Time.deltaTime;
+        position = this.transform.position;
+        velocity = this.transform.forward;
     }
 	
 	// Update is called once per frame
@@ -101,7 +105,6 @@ public class Example1 : MonoBehaviour {
             foodText.GetComponent<Text>().text = "Food: " + eat.ToString() + "%";
             sleepText.GetComponent<Text>().text = "Sleep: " + sleep.ToString() + "%";
             lvlText.GetComponent<Text>().text = "Lvl "+lvl+"\n " + xp.ToString() + "/" + maxXp.ToString();
-            //Debug.Log(sleep + "   " + eat + "   " + bath);
         }
         PathFinding();
         Movement();
@@ -191,18 +194,28 @@ public class Example1 : MonoBehaviour {
             }
             else
             {
-                desiredVelocity = path[0].position - pj.transform.position;
+                t = path[0].position;
+
+                desiredVelocity = t - pj.transform.position;
                 desiredVelocity = desiredVelocity.normalized;
                 pj.transform.forward = desiredVelocity;
 
                 desiredVelocity *= maxSpeed;
 
-                steeringForce = desiredVelocity;
+                steeringForce = desiredVelocity - velocity;
                 steeringForce /= maxSpeed;
                 steeringForce *= maxForce;
 
+                acceleration = steeringForce / mass;
+                velocity += acceleration * Time.deltaTime;
+                position += velocity * Time.deltaTime;
+
                 if (distance > 0.1)
-                    pj.transform.position += steeringForce;
+                {
+                    pj.transform.position = position;
+                    pj.transform.forward = velocity.normalized;
+                }
+                    
             }
         }
     }

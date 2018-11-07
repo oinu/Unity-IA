@@ -16,6 +16,9 @@ public class Wander : MonoBehaviour {
     private Vector3 targetToSeek;
     private float wanderAngle;
 
+    private Vector3 acceleration, velocity, position;
+    public float mass;
+
 	// Use this for initialization
 	void Start () {
 
@@ -28,6 +31,9 @@ public class Wander : MonoBehaviour {
         Vector3 d = target.transform.position - this.transform.position;
         float rand = Random.Range(-randomRange, randomRange);
         wanderAngle = Mathf.Atan(radius / d.magnitude) + rand * wanderMaxChange;
+
+        velocity = target.transform.position - this.transform.position;
+        position = this.transform.position;
     }
 	
 	// Update is called once per frame
@@ -43,21 +49,28 @@ public class Wander : MonoBehaviour {
 
         //Target to Seek
         targetToSeek.x = target.transform.position.x + radius * Mathf.Cos(wanderAngle);
+        targetToSeek.y = this.transform.position.y;
         targetToSeek.z = target.transform.position.z + radius * Mathf.Sin(wanderAngle);
 
-        desiredVelocity = targetToSeek - this.transform.position;
-        desiredVelocity = desiredVelocity.normalized;
-        desiredVelocity *= maxSpeed;
+        if (Vector3.Distance(targetToSeek, position) > 0.1)
+        {
 
-        steeringForce = desiredVelocity;
+            desiredVelocity = targetToSeek - this.transform.position;
+            desiredVelocity = desiredVelocity.normalized;
+            desiredVelocity *= maxSpeed;
 
-        steeringForce /= maxSpeed;
-        steeringForce *= maxForce;
+            steeringForce = desiredVelocity - velocity;
 
-        this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
+            steeringForce /= maxSpeed;
+            steeringForce *= maxForce;
 
-        //The actual velocity is the forward;
-        this.transform.forward = desiredVelocity.normalized;
+            acceleration = steeringForce / mass;
+            velocity += acceleration * Time.deltaTime;
+            position += velocity * Time.deltaTime;
 
+            this.transform.position = position;
+
+            this.transform.forward = velocity.normalized;
+        }
     }
 }

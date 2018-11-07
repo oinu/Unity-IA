@@ -176,19 +176,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2080869294}
-  maxForce: 0.05
-  maxSpeed: 10
+  maxForce: 75
+  maxSpeed: 3
   neighborRadius: 2
-  kSeparationForce: 50
-  kCohesionForce: 20
-  kAligmentForce: 30
-  kMaxFlockingForce: 0.8
+  kSeparationForce: 15
+  kCohesionForce: 6
+  kAligmentForce: 9
+  kMaxFlockingForce: 0.4
   neighbors:
   - {fileID: 953016049}
   - {fileID: 277480518}
   - {fileID: 283806857}
   - {fileID: 239974813}
   - {fileID: 1769841907}
+  mass: 1
 --- !u!1 &239974813 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1175378330624022, guid: 38a3d823a1ed9d146affe785c6c4ba36,
@@ -206,19 +207,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2080869294}
-  maxForce: 0.05
-  maxSpeed: 10
+  maxForce: 75
+  maxSpeed: 3
   neighborRadius: 2
-  kSeparationForce: 50
-  kCohesionForce: 20
-  kAligmentForce: 30
-  kMaxFlockingForce: 0.8
+  kSeparationForce: 15
+  kCohesionForce: 6
+  kAligmentForce: 9
+  kMaxFlockingForce: 0.4
   neighbors:
   - {fileID: 953016049}
   - {fileID: 193766939}
   - {fileID: 277480518}
   - {fileID: 283806857}
   - {fileID: 1769841907}
+  mass: 1
 --- !u!1001 &277480517
 Prefab:
   m_ObjectHideFlags: 0
@@ -282,19 +284,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2080869294}
-  maxForce: 0.05
-  maxSpeed: 10
+  maxForce: 75
+  maxSpeed: 3
   neighborRadius: 2
-  kSeparationForce: 50
-  kCohesionForce: 20
-  kAligmentForce: 30
-  kMaxFlockingForce: 0.8
+  kSeparationForce: 15
+  kCohesionForce: 6
+  kAligmentForce: 9
+  kMaxFlockingForce: 0.4
   neighbors:
   - {fileID: 953016049}
   - {fileID: 193766939}
   - {fileID: 283806857}
   - {fileID: 239974813}
   - {fileID: 1769841907}
+  mass: 1
 --- !u!1001 &283806856
 Prefab:
   m_ObjectHideFlags: 0
@@ -358,19 +361,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2080869294}
-  maxForce: 0.05
-  maxSpeed: 10
+  maxForce: 75
+  maxSpeed: 3
   neighborRadius: 2
-  kSeparationForce: 50
-  kCohesionForce: 20
-  kAligmentForce: 30
-  kMaxFlockingForce: 0.8
+  kSeparationForce: 15
+  kCohesionForce: 6
+  kAligmentForce: 9
+  kMaxFlockingForce: 0.4
   neighbors:
   - {fileID: 953016049}
   - {fileID: 193766939}
   - {fileID: 277480518}
   - {fileID: 239974813}
   - {fileID: 1769841907}
+  mass: 1
 --- !u!1 &758170178
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,19 +500,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2080869294}
-  maxForce: 0.05
-  maxSpeed: 10
+  maxForce: 75
+  maxSpeed: 3
   neighborRadius: 2
-  kSeparationForce: 50
-  kCohesionForce: 20
-  kAligmentForce: 30
-  kMaxFlockingForce: 0.8
+  kSeparationForce: 15
+  kCohesionForce: 6
+  kAligmentForce: 9
+  kMaxFlockingForce: 0.4
   neighbors:
   - {fileID: 193766939}
   - {fileID: 277480518}
   - {fileID: 283806857}
   - {fileID: 239974813}
   - {fileID: 1769841907}
+  mass: 1
 --- !u!1001 &1059953157
 Prefab:
   m_ObjectHideFlags: 0
@@ -695,19 +700,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2080869294}
-  maxForce: 0.05
-  maxSpeed: 10
+  maxForce: 75
+  maxSpeed: 3
   neighborRadius: 2
-  kSeparationForce: 50
-  kCohesionForce: 20
-  kAligmentForce: 30
-  kMaxFlockingForce: 0.8
+  kSeparationForce: 15
+  kCohesionForce: 6
+  kAligmentForce: 9
+  kMaxFlockingForce: 0.4
   neighbors:
   - {fileID: 953016049}
   - {fileID: 193766939}
   - {fileID: 277480518}
   - {fileID: 283806857}
   - {fileID: 239974813}
+  mass: 1
 --- !u!1 &1777187555
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +837,11 @@ Prefab:
     - target: {fileID: 4563282238102266, guid: b3a838dc466169f47b1b2fed12b0f39f, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114447816517276002, guid: b3a838dc466169f47b1b2fed12b0f39f,
+        type: 2}
+      propertyPath: speed
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3a838dc466169f47b1b2fed12b0f39f, type: 2}

@@ -13,32 +13,47 @@ public class Flocking : MonoBehaviour {
     public float kAligmentForce;
     public float kMaxFlockingForce;
     public List<GameObject> neighbors;
+    public float mass;
 
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
     private Vector3 flockingForce;
+    private Vector3 acceleration;
+    private Vector3 velocity;
+    private Vector3 position;
+    private Vector3 t;
 
     // Use this for initialization
     void Start () {
-		
+        position = this.transform.position;
+        velocity = this.transform.forward;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        desiredVelocity = target.transform.position - this.transform.position;
+        t = target.transform.position;
+        t.y = this.transform.position.y;
+        desiredVelocity = t - this.transform.position;
         desiredVelocity = desiredVelocity.normalized;
         desiredVelocity *= maxSpeed;
 
         FlockingForceUpdate();
-        steeringForce = desiredVelocity + flockingForce;
+        steeringForce = (desiredVelocity + flockingForce) - velocity;
 
         steeringForce /= maxSpeed;
         steeringForce *= maxForce;
 
-        this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
+        acceleration = steeringForce * mass;
+        velocity += acceleration * Time.deltaTime;
+        position += velocity * Time.deltaTime;
+
+        this.transform.position = position;
+        this.transform.forward = velocity.normalized;
+
+        /*this.transform.position = new Vector3(this.transform.position.x + steeringForce.x, this.transform.position.y, this.transform.position.z + steeringForce.z);
 
         //The actual velocity is the forward;
-        this.transform.forward = desiredVelocity.normalized;
+        this.transform.forward = desiredVelocity.normalized;*/
     }
 
     void FlockingForceUpdate()

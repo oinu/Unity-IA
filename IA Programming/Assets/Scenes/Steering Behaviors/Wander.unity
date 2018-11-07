@@ -537,7 +537,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1442799225}
-  maxForce: 0.1
+  maxForce: 100
   maxSpeed: 10
   wanderMaxChange: 5
   randomRange: 10
+  mass: 1

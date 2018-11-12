@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Example1 : MonoBehaviour {
+public class Hardcode_Finite_State_Machine : MonoBehaviour {
     enum STATE { WORK, SLEEP, EAT, BATH };
 
     public GameObject pj;

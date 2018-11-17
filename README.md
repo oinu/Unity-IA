@@ -20,11 +20,11 @@ We can find the most basics Steering Behaviors:
 * Area Avoidence.
 * Simple Path Following.
 * Predicted Path Following.
-* Flocking (is a combined with weights).
 
 ## Combined Steering Behaviors
 It combines some previous Steering Behaviors.
 
+* Flocking (is a combined with weights).
 * Combination1 (Area Avoidance, Predicted Path Following & Wander).
 
 ## Pathfinding

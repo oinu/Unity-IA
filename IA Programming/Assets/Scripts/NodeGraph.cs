@@ -41,7 +41,7 @@ public class NodeGraph
     public void SetPosition(Vector3 pos)
     {
         position = pos;
-        obj.transform.position = pos;
+        if(obj!=null)obj.transform.position = pos;
     }
     public Vector3 GetPosition()
     {

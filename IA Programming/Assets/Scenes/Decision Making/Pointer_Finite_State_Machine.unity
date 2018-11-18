@@ -390,6 +390,10 @@ MonoBehaviour:
   pj: {fileID: 2078207255}
   area: {fileID: 1103237457}
   obstacle: {fileID: 651869193}
+  gridSize: 10
+  maxSpeed: 5
+  maxForce: 100
+  mass: 1
 --- !u!4 &1210781323
 Transform:
   m_ObjectHideFlags: 0

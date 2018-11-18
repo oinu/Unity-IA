@@ -40,3 +40,4 @@ These algorithms are:
 How the agent make decision at where it goes.
 
 * Hardcode Finite State Machine.
+* Point Style Finite State Machine (working).

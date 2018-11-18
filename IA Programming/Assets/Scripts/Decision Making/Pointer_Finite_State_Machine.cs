@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//----- THINGS I DISCARD ------//
+// 1. Implement a A* or Dijkstra algorithm, because all the node have the same weight.
+// 2. Implement a Greedy Best First Search algorithm. The movement is more erratic like Breadth First Search.
+// 3. Implement a Predicted Path Following, because without it is the same path, more or less.
+
+
 public class Pointer_Finite_State_Machine : MonoBehaviour {
     public GameObject pj;
     public GameObject area;
     public GameObject obstacle;
+    public GameObject firstAidKit;
+    public GameObject bullets;
 
     private NodeGraph[,] grid;
     private List<NodeGraph> path, fronter,visited;
-    private NodeGraph goal;
+    private NodeGraph goal,firstAidNode, bulletsNode;
     public int gridSize;
     private bool found;
 
@@ -87,16 +95,52 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         }
         #endregion
 
+        #region MOVE FIRST AID & BULLETS
+        int index = 0;
+        int index2 = 0;
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                if (grid[i, j] != null && Vector3.Distance(firstAidKit.transform.position, grid[i, j].position)
+                    < Vector3.Distance(firstAidKit.transform.position, grid[index, index2].position))
+                {
+                    index = i;
+                    index2 = j;
+                }
+            }
+        }
+        firstAidKit.transform.position = grid[index, index2].position;
+        firstAidNode = grid[index, index2];
+
+        index = 0;
+        index2 = 0;
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                if (grid[i, j] != null && Vector3.Distance(bullets.transform.position, grid[i, j].position)
+                    < Vector3.Distance(bullets.transform.position, grid[index, index2].position))
+                {
+                    index = i;
+                    index2 = j;
+                }
+            }
+        }
+        bullets.transform.position = grid[index, index2].position;
+        bulletsNode = grid[index, index2];
+        #endregion
+
         //remove for a dinamic scene
-        goal = grid[0, gridSize - 1]; 
+        goal = firstAidNode; 
         NearestNodePJ();
-        CalculateHeuristicCost();
     }
 
     // Update is called once per frame
     void Update () {
         PathFinding();
         Movement();
+        RestartPathFinding();
 	}
 
     /// <summary>
@@ -154,79 +198,79 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
     }
 
     /// <summary>
-    /// Use Greedy Best First Search algorithms
+    /// Use Breath First Search algorithms
     /// </summary>
     private void PathFinding()
     {
-        if (fronter.Count > 0)
+        if (fronter.Count > 0 && !found)
         {
-            NodeGraph p;
+            //NodeGraph p;
             while (!found)
             {
                 List<NodeGraph> auxList = new List<NodeGraph>();
 
-                p = fronter[0];
-                if (!p.visited)
+                foreach (NodeGraph p in fronter)
                 {
-                    p.visited = true;
-                    visited.Add(p);
-
-                    if (p.position == goal.position)
+                    if (!p.visited)
                     {
-                        found = true;
-                        auxList.Clear();
-                        NodeGraph current = p;
-                        Stack<NodeGraph> stack = new Stack<NodeGraph>();
+                        p.visited = true;
+                        visited.Add(p);
 
-                        while (current.parent != null)
+                        if (p.position == goal.position)
                         {
-                            stack.Push(current);
-                            current = current.parent;
-                        }
+                            found = true;
+                            auxList.Clear();
+                            NodeGraph current = p;
+                            Stack<NodeGraph> stack = new Stack<NodeGraph>();
 
-                        int count = stack.Count;
-                        for (int i = 0; i < count; i++)
-                        {
-                            path.Add(stack.Pop());
-                        }
+                            while (current.parent != null)
+                            {
+                                stack.Push(current);
+                                current = current.parent;
+                            }
 
-                        stack.Clear();
-                        break;
-                    }
-                    else
-                    {
-                        NodeGraph n;
-                        if (p.top != null && !p.top.visited)
-                        {
-                            n = p.top;
-                            n.parent = p;
-                            auxList.Add(n);
+                            int count = stack.Count;
+                            for (int i = 0; i < count; i++)
+                            {
+                                path.Add(stack.Pop());
+                            }
+
+                            stack.Clear();
+                            break;
                         }
-                        if (p.right != null && !p.right.visited)
+                        else
                         {
-                            n = p.right;
-                            n.parent = p;
-                            auxList.Add(n);
-                        }
-                        if (p.bottom != null && !p.bottom.visited)
-                        {
-                            n = p.bottom;
-                            n.parent = p;
-                            auxList.Add(n);
-                        }
-                        if (p.left != null && !p.left.visited)
-                        {
-                            n = p.left;
-                            n.parent = p;
-                            auxList.Add(n);
+                            NodeGraph n;
+                            if (p.top != null && !p.top.visited)
+                            {
+                                n = p.top;
+                                n.parent = p;
+                                auxList.Add(n);
+                            }
+                            if (p.right != null && !p.right.visited)
+                            {
+                                n = p.right;
+                                n.parent = p;
+                                auxList.Add(n);
+                            }
+                            if (p.bottom != null && !p.bottom.visited)
+                            {
+                                n = p.bottom;
+                                n.parent = p;
+                                auxList.Add(n);
+                            }
+                            if (p.left != null && !p.left.visited)
+                            {
+                                n = p.left;
+                                n.parent = p;
+                                auxList.Add(n);
+                            }
                         }
                     }
                 }
 
                 fronter.Clear();
                 fronter = auxList;
-
-                HeuristicBubbleSort();
             }
         }
     }
@@ -255,75 +299,39 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
     }
 
     /// <summary>
-    /// Sort the fronter using the heuristic cost with bubblesort method
+    /// Prepare all for a new PathFinding
     /// </summary>
-    private void HeuristicBubbleSort()
+    private void RestartPathFinding()
     {
-        //Create and Add in the index list the index of the current fronter
-        int[,] indexList = new int[fronter.Count, 2];
-        for (int i = 0; i < fronter.Count; i++)
+        if (found && path.Count == 0)
         {
-            //First element is the heuristic cost and the second the index in the array.
-            indexList[i, 0] = fronter[i].heuristicCost;
-            indexList[i, 1] = i;
-
-        }
-
-        //Bubble Sort
-        int index = 0;
-        for (int i = 0; i < fronter.Count; i++)
-        {
-            index = i;
-            for (int j = i; j < fronter.Count; j++)
+            if (goal == firstAidNode)
             {
-                if (indexList[j, 0] < indexList[index, 0])
+                goal = bulletsNode;
+            }
+            else
+            {
+                goal = firstAidNode;
+            }
+            found = false;
+
+            for (int i = 0; i < gridSize; i++)
+            {
+                for (int j = 0; j < gridSize; j++)
                 {
-                    index = j;
+                    if (grid[i, j] != null)
+                    {
+                        grid[i, j].visited = false;
+                        grid[i, j].parent = null;
+                    }
                 }
             }
 
-            //If we find someone smaller than the current
-            //change it!
-            if (index != i)
-            {
-                int auxIndex, auxValue;
-                auxValue = indexList[i, 0];
-                auxIndex = indexList[i, 1];
+            fronter.Clear();
+            visited.Clear();
+            path.Clear();
+            NearestNodePJ();
 
-                indexList[i, 0] = indexList[index, 0];
-                indexList[i, 1] = indexList[index, 1];
-
-                indexList[index, 0] = auxValue;
-                indexList[index, 1] = auxIndex;
-            }
-        }
-
-        //Create a auxiliar fronter list
-        List<NodeGraph> auxFronter = new List<NodeGraph>();
-        for (int i = 0; i < fronter.Count; i++)
-        {
-            auxFronter.Add(fronter[indexList[i, 1]]);
-        }
-        fronter.Clear();
-        fronter = auxFronter;
-    }
-
-    /// <summary>
-    /// Calculate the new heuristic cost. Based in Manhattan heuristic.
-    /// </summary>
-    private void CalculateHeuristicCost()
-    {
-        for (int i = 0; i < gridSize; i++)
-        {
-            for (int j = 0; j < gridSize; j++)
-            {
-
-                if (grid[i, j] != null)
-                {
-                    grid[i, j].heuristicCost = (int)(Mathf.Abs(grid[i, j].position.x - goal.position.x)
-                        + Mathf.Abs(grid[i, j].position.z - goal.position.z));
-                }
-            }
         }
     }
 }

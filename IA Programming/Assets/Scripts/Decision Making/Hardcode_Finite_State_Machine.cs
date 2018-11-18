@@ -30,7 +30,7 @@ public class Hardcode_Finite_State_Machine : MonoBehaviour {
 
     public GameObject bathText,foodText,sleepText,lvlText;
 
-    private STATE state,lastState;
+    private STATE state;
 
 	// Use this for initialization
 	void Start () {
@@ -75,7 +75,6 @@ public class Hardcode_Finite_State_Machine : MonoBehaviour {
 
         found = false;
         state = STATE.WORK;
-        lastState = state;
         target = area[5];
 
         NearestNodePJ();
@@ -110,7 +109,7 @@ public class Hardcode_Finite_State_Machine : MonoBehaviour {
         Movement();
 	}
 
-    //Actually is a Breadth First Search Algorism.
+    //Actually is a Breadth First Search Algorithm.
     private void PathFinding()
     {
         while(!found)

@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class State {
+public enum STATES { FIRSTAID,BULLETS};
 
+/// <summary>
+/// A class that represents a base State
+/// </summary>
+public class State {
+    public STATES currentState;
     public virtual void Start()
     {
 
@@ -61,7 +66,6 @@ public class State {
         {
             while (!found)
             {
-                if (fronter.Count == 0) break;
                 List<NodeGraph> auxList = new List<NodeGraph>();
 
                 foreach (NodeGraph p in fronter)
@@ -131,8 +135,60 @@ public class State {
 
         return path;
     }
+
+    /// <summary>
+    /// Move the agent to the next node in the path, using Seek Steering Behaviors formula
+    /// </summary>
+    /// <param name="path">The path to follow</param>
+    /// <param name="pj">The agent</param>
+    /// <param name="velocity">The velocity of the agent</param>
+    /// <param name="position">The position of the agent</param>
+    /// <param name="maxSpeed">The maxSpeed of the agent</param>
+    /// <param name="maxForce">The maxForce of the agent</param>
+    /// <param name="mass">The mass of the agent</param>
+    protected void Movement(ref List<NodeGraph> path, ref GameObject pj,ref Vector3 velocity,ref Vector3 position, float maxSpeed, float maxForce, float mass)
+    {
+        Vector3 target, desiredVelocity, steeringForce, acceleration;
+        if (path.Count > 0)
+        {
+            float distance = Vector3.Distance(path[0].position, pj.transform.position);
+
+            if (distance <= 0.1f)
+            {
+                path.RemoveAt(0);
+            }
+            else
+            {
+                target = path[0].position;
+
+                desiredVelocity = target - pj.transform.position;
+                desiredVelocity = desiredVelocity.normalized;
+                pj.transform.forward = desiredVelocity;
+
+                desiredVelocity *= maxSpeed;
+
+                steeringForce = desiredVelocity - velocity;
+                steeringForce /= maxSpeed;
+                steeringForce *= maxForce;
+
+                acceleration = steeringForce / mass;
+                velocity += acceleration * Time.deltaTime;
+                position += velocity * Time.deltaTime;
+
+                if (distance > 0.1)
+                {
+                    pj.transform.position = position;
+                    pj.transform.forward = velocity.normalized;
+                }
+
+            }
+        }
+    }
 }
 
+/// <summary>
+/// A class that represents a state of go to first aid kit
+/// </summary>
 public class FirstAid : State
 {
     private NodeGraph goal;
@@ -158,9 +214,22 @@ public class FirstAid : State
 
         fronter = new List<NodeGraph>();
         visited = new List<NodeGraph>();
+        currentState = STATES.FIRSTAID;
     }
 
     public override void Start()
+    {
+        fronter.Add(NearestNode(ref grid, pj.transform.position, gridSize));
+        pj.transform.position = fronter[0].position;
+        path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
+    }
+
+    public override void Update()
+    {
+        Movement(ref path,ref pj,ref velocity,ref position, maxSpeed, maxForce, mass);
+    }
+
+    public override void Exit()
     {
         for (int i = 0; i < gridSize; i++)
         {
@@ -175,9 +244,72 @@ public class FirstAid : State
         }
 
         fronter.Clear();
+        fronter = null;
         visited.Clear();
+        visited = null;
+    }
+}
 
+/// <summary>
+/// A class that represents a state of go to bullets
+/// </summary>
+public class Bullets : State
+{
+    private NodeGraph goal;
+    private GameObject pj;
+    private NodeGraph[,] grid;
+    private List<NodeGraph> path, fronter, visited;
+    private Vector3 acceleration, position, velocity, desiredVelocity, steeringForce, target;
+    private float maxSpeed, maxForce, mass;
+    private int gridSize;
+
+    public Bullets(ref NodeGraph aGoal, ref GameObject aPj, ref NodeGraph[,] aGrid, float aSpeed, float aForce, float aMass, int aGridSize)
+    {
+        goal = aGoal;
+        pj = aPj;
+        grid = aGrid;
+        maxForce = aForce;
+        maxSpeed = aSpeed;
+        mass = aMass;
+        gridSize = aGridSize;
+
+        position = pj.transform.position;
+        velocity = pj.transform.forward;
+
+        fronter = new List<NodeGraph>();
+        visited = new List<NodeGraph>();
+        currentState = STATES.BULLETS;
+    }
+
+    public override void Start()
+    {
         fronter.Add(NearestNode(ref grid, pj.transform.position, gridSize));
+        pj.transform.position = fronter[0].position;
         path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
+    }
+
+    public override void Update()
+    {
+        Movement(ref path, ref pj, ref velocity, ref position, maxSpeed, maxForce, mass);
+    }
+
+    public override void Exit()
+    {
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                if (grid[i, j] != null)
+                {
+                    grid[i, j].visited = false;
+                    grid[i, j].parent = null;
+                }
+            }
+        }
+
+        fronter.Clear();
+        fronter = null;
+        visited.Clear();
+        visited = null;
     }
 }

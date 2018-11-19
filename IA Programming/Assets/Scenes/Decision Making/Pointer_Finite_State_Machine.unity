@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641317, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -680,7 +680,7 @@ MonoBehaviour:
   obstacle: {fileID: 651869193}
   firstAidKit: {fileID: 497043327}
   bullets: {fileID: 903688346}
-  gridSize: 10
+  gridSize: 20
   maxSpeed: 5
   maxForce: 100
   mass: 1

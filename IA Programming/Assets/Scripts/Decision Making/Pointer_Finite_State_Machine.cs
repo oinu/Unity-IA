@@ -134,13 +134,16 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         //remove for a dinamic scene
         goal = firstAidNode; 
         NearestNodePJ();
+
+        FirstAid state = new FirstAid(ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
+        state.Start();
     }
 
     // Update is called once per frame
     void Update () {
-        PathFinding();
-        Movement();
-        RestartPathFinding();
+        //PathFinding();
+        //Movement();
+        //RestartPathFinding();
 	}
 
     /// <summary>
@@ -204,7 +207,6 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
     {
         if (fronter.Count > 0 && !found)
         {
-            //NodeGraph p;
             while (!found)
             {
                 List<NodeGraph> auxList = new List<NodeGraph>();

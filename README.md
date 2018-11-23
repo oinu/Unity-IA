@@ -5,7 +5,10 @@ This repository contains:
 * Steering Behaviors.
 * Combined Steering Behaviors.
 * Pathfinding.
+  * Blind Search.
+  * Informed Search.
 * Decision Making.
+  * Reaction Based.
 
 ## Steering Behaviors
 It used for simulate a movement of the agent in a wolrd. 

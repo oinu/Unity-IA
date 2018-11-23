@@ -8,7 +8,21 @@ public enum STATES { FIRSTAID,BULLETS};
 /// A class that represents a base State
 /// </summary>
 public class State {
-    public STATES currentState;
+    private STATES currentState;
+
+    public STATES CurrentState
+    {
+        get
+        {
+            return currentState;
+        }
+
+        set
+        {
+            currentState = value;
+        }
+    }
+
     public virtual void Start()
     {
 
@@ -187,9 +201,9 @@ public class State {
 }
 
 /// <summary>
-/// A class that represents a state of go to first aid kit
+/// A state for move the agent to the current position to a goal.
 /// </summary>
-public class FirstAid : State
+public class GoTo : State
 {
     private NodeGraph goal;
     private GameObject pj;
@@ -199,8 +213,9 @@ public class FirstAid : State
     private float maxSpeed, maxForce, mass;
     private int gridSize;
 
-    public FirstAid(ref NodeGraph aGoal, ref GameObject aPj, ref NodeGraph[,] aGrid, float aSpeed, float aForce, float aMass, int aGridSize)
+    public GoTo( STATES aState, ref NodeGraph aGoal, ref GameObject aPj, ref NodeGraph[,] aGrid, float aSpeed, float aForce, float aMass, int aGridSize)
     {
+        CurrentState = aState;
         goal = aGoal;
         pj = aPj;
         grid = aGrid;
@@ -214,71 +229,6 @@ public class FirstAid : State
 
         fronter = new List<NodeGraph>();
         visited = new List<NodeGraph>();
-        currentState = STATES.FIRSTAID;
-    }
-
-    public override void Start()
-    {
-        fronter.Add(NearestNode(ref grid, pj.transform.position, gridSize));
-        pj.transform.position = fronter[0].position;
-        path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
-    }
-
-    public override void Update()
-    {
-        Movement(ref path,ref pj,ref velocity,ref position, maxSpeed, maxForce, mass);
-    }
-
-    public override void Exit()
-    {
-        for (int i = 0; i < gridSize; i++)
-        {
-            for (int j = 0; j < gridSize; j++)
-            {
-                if (grid[i, j] != null)
-                {
-                    grid[i, j].visited = false;
-                    grid[i, j].parent = null;
-                }
-            }
-        }
-
-        fronter.Clear();
-        fronter = null;
-        visited.Clear();
-        visited = null;
-    }
-}
-
-/// <summary>
-/// A class that represents a state of go to bullets
-/// </summary>
-public class Bullets : State
-{
-    private NodeGraph goal;
-    private GameObject pj;
-    private NodeGraph[,] grid;
-    private List<NodeGraph> path, fronter, visited;
-    private Vector3 acceleration, position, velocity, desiredVelocity, steeringForce, target;
-    private float maxSpeed, maxForce, mass;
-    private int gridSize;
-
-    public Bullets(ref NodeGraph aGoal, ref GameObject aPj, ref NodeGraph[,] aGrid, float aSpeed, float aForce, float aMass, int aGridSize)
-    {
-        goal = aGoal;
-        pj = aPj;
-        grid = aGrid;
-        maxForce = aForce;
-        maxSpeed = aSpeed;
-        mass = aMass;
-        gridSize = aGridSize;
-
-        position = pj.transform.position;
-        velocity = pj.transform.forward;
-
-        fronter = new List<NodeGraph>();
-        visited = new List<NodeGraph>();
-        currentState = STATES.BULLETS;
     }
 
     public override void Start()

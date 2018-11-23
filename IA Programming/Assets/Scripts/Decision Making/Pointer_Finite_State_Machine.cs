@@ -122,7 +122,7 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         #endregion
 
         goal = firstAidNode; 
-        state = new FirstAid(ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
+        state = new GoTo(STATES.FIRSTAID, ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
         state.Start();
     }
 
@@ -134,18 +134,18 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         if(Vector3.Distance(pj.transform.position,goal.position)<=0.1f)
         {
             
-            if (state.currentState==STATES.FIRSTAID)
+            if (state.CurrentState==STATES.FIRSTAID)
             {
                 state.Exit();
                 goal = bulletsNode;
-                state = new Bullets(ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                state = new GoTo( STATES.BULLETS, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
                 state.Start();
             }
             else
             {
                 state.Exit();
                 goal = firstAidNode;
-                state = new FirstAid(ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                state = new GoTo(STATES.FIRSTAID, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
                 state.Start();
             }
         }

@@ -30,14 +30,19 @@ It combines some previous Steering Behaviors.
 ## Pathfinding
 It contains algorithms is used for find goal. In the examples the goal is representated in world space.
 
-These algorithms are:
+### Blind Search Method
+
 * Breadth First Search.
 * Dijkstra.
+
+### Informed Search Method
+
 * Greedy Best First Search.
 * A*.
 
 ## Decision Making
-How the agent make decision at where it goes.
+How the agent make decision at what it does.
 
+### Reaction Based
 * Hardcode Finite State Machine.
 * Point Style Finite State Machine (working).

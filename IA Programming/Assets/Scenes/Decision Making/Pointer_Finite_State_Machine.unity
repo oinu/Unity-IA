@@ -113,6 +113,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &230596589
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -4.3616357
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339186186486128, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
+  m_IsPrefabAsset: 0
+--- !u!1 &230596590 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1993481373231764, guid: 5f95669b6168e0f45b76fcbe44583f98,
+    type: 2}
+  m_PrefabInternal: {fileID: 230596589}
 --- !u!1 &275631486
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &497043327
 GameObject:
@@ -445,7 +492,7 @@ Transform:
   m_LocalScale: {x: 0.6, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &651869193
 GameObject:
@@ -530,7 +577,7 @@ Transform:
   m_LocalScale: {x: 3, y: 1, z: 7}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &903688346
 GameObject:
@@ -561,7 +608,7 @@ Transform:
   - {fileID: 275631487}
   - {fileID: 1288456181}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1103237457
 GameObject:
@@ -646,7 +693,7 @@ Transform:
   m_LocalScale: {x: 10, y: 1, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1210781321
 GameObject:
@@ -676,6 +723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pj: {fileID: 2078207255}
+  enemy: {fileID: 230596590}
   area: {fileID: 1103237457}
   obstacle: {fileID: 651869193}
   firstAidKit: {fileID: 497043327}
@@ -800,7 +848,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4137035605788604, guid: 38a3d823a1ed9d146affe785c6c4ba36, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -3.591665
+      value: -2.39
       objectReference: {fileID: 0}
     - target: {fileID: 4137035605788604, guid: 38a3d823a1ed9d146affe785c6c4ba36, type: 2}
       propertyPath: m_LocalRotation.x
@@ -889,7 +937,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &2078207255 stripped
 GameObject:

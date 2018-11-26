@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum STATES { FIRSTAID,BULLETS};
+public enum STATES { FIRSTAID,BULLETS,PATROL};
 
 /// <summary>
 /// A class that represents a base State
@@ -206,26 +206,26 @@ public class State {
 public class GoTo : State
 {
     private NodeGraph goal;
-    private GameObject pj;
+    private GameObject agent;
     private NodeGraph[,] grid;
     private List<NodeGraph> path, fronter, visited;
     private Vector3 acceleration, position, velocity, desiredVelocity, steeringForce, target;
     private float maxSpeed, maxForce, mass;
     private int gridSize;
 
-    public GoTo( STATES aState, ref NodeGraph aGoal, ref GameObject aPj, ref NodeGraph[,] aGrid, float aSpeed, float aForce, float aMass, int aGridSize)
+    public GoTo( STATES aState, ref NodeGraph aGoal, ref GameObject aAgent, ref NodeGraph[,] aGrid, float aSpeed, float aForce, float aMass, int aGridSize)
     {
         CurrentState = aState;
         goal = aGoal;
-        pj = aPj;
+        agent = aAgent;
         grid = aGrid;
         maxForce = aForce;
         maxSpeed = aSpeed;
         mass = aMass;
         gridSize = aGridSize;
 
-        position = pj.transform.position;
-        velocity = pj.transform.forward;
+        position = agent.transform.position;
+        velocity = agent.transform.forward;
 
         fronter = new List<NodeGraph>();
         visited = new List<NodeGraph>();
@@ -233,14 +233,80 @@ public class GoTo : State
 
     public override void Start()
     {
-        fronter.Add(NearestNode(ref grid, pj.transform.position, gridSize));
-        pj.transform.position = fronter[0].position;
+        fronter.Add(NearestNode(ref grid, agent.transform.position, gridSize));
+        agent.transform.position = fronter[0].position;
         path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
     }
 
     public override void Update()
     {
-        Movement(ref path, ref pj, ref velocity, ref position, maxSpeed, maxForce, mass);
+        Movement(ref path, ref agent, ref velocity, ref position, maxSpeed, maxForce, mass);
+    }
+
+    public override void Exit()
+    {
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                if (grid[i, j] != null)
+                {
+                    grid[i, j].visited = false;
+                    grid[i, j].parent = null;
+                }
+            }
+        }
+
+        fronter.Clear();
+        fronter = null;
+        visited.Clear();
+        visited = null;
+    }
+}
+
+/// <summary>
+/// The agent patrol between two points
+/// </summary>
+public class Patrol : State
+{
+    private NodeGraph start, end;
+    private GameObject agent;
+    private NodeGraph[,] grid;
+    private List<NodeGraph> path, fronter, visited;
+    private Vector3 acceleration, position, velocity, desiredVelocity, steeringForce, target;
+    private float maxSpeed, maxForce, mass;
+    private int gridSize;
+
+    public Patrol(STATES aState, ref GameObject aAgent, ref NodeGraph[,] aGrid,ref NodeGraph aStart,ref NodeGraph aEnd, float aSpeed, float aForce, float aMass, int aGridSize)
+    {
+        CurrentState = aState;
+        agent = aAgent;
+        grid = aGrid;
+        maxForce = aForce;
+        maxSpeed = aSpeed;
+        mass = aMass;
+        gridSize = aGridSize;
+        start = aStart;
+        end = aEnd;
+
+        position = agent.transform.position;
+        velocity = agent.transform.forward;
+
+        fronter = new List<NodeGraph>();
+        visited = new List<NodeGraph>();
+        
+    }
+
+    public override void Start()
+    {
+        fronter.Add(start);
+        agent.transform.position = fronter[0].position;
+        path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref end);
+    }
+
+    public override void Update()
+    {
+        Movement(ref path, ref agent, ref velocity, ref position, maxSpeed, maxForce, mass);
     }
 
     public override void Exit()

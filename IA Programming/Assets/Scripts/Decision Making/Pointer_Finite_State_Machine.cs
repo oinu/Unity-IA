@@ -8,9 +8,11 @@ using UnityEngine;
 // 3. Implement a Predicted Path Following, because without it is the same path, more or less.
 // 4. At the beginnig, the pathfinding and the pathfollowing was in this script. Now is on the state.
 
+//Actually working in patrol state. Some problems to implement a patrol enemy using the same states (gird)
 
 public class Pointer_Finite_State_Machine : MonoBehaviour {
     public GameObject pj;
+    public GameObject enemy;
     public GameObject area;
     public GameObject obstacle;
     public GameObject firstAidKit;
@@ -19,8 +21,8 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
     public float maxSpeed, maxForce, mass;
 
     private NodeGraph[,] grid;
-    private NodeGraph goal,firstAidNode, bulletsNode;
-    private State state;
+    private NodeGraph goal,firstAidNode, bulletsNode, startPatrolNode, endPatrolNode;
+    private State pjState;
 
     // Use this for initialization
     void Start () {
@@ -122,31 +124,46 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         #endregion
 
         goal = firstAidNode; 
-        state = new GoTo(STATES.FIRSTAID, ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
-        state.Start();
+
+        pjState = new GoTo(STATES.FIRSTAID, ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
+        pjState.Start();
+
+        index = 0;
+        for(int i=0; i<gridSize; i++)
+        {
+            if(grid[0,i].position.z==pj.transform.position.z)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        startPatrolNode = grid[0, index];
+        endPatrolNode = grid[gridSize-1, index];
+
     }
 
     // Update is called once per frame
     void Update () {
-        state.Update();
+        pjState.Update();
 
         //Basic Change State
         if(Vector3.Distance(pj.transform.position,goal.position)<=0.1f)
         {
             
-            if (state.CurrentState==STATES.FIRSTAID)
+            if (pjState.CurrentState==STATES.FIRSTAID)
             {
-                state.Exit();
+                pjState.Exit();
                 goal = bulletsNode;
-                state = new GoTo( STATES.BULLETS, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
-                state.Start();
+                pjState = new GoTo( STATES.BULLETS, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                pjState.Start();
             }
             else
             {
-                state.Exit();
+                pjState.Exit();
                 goal = firstAidNode;
-                state = new GoTo(STATES.FIRSTAID, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
-                state.Start();
+                pjState = new GoTo(STATES.FIRSTAID, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                pjState.Start();
             }
         }
     }

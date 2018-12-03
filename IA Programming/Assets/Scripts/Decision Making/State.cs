@@ -269,7 +269,7 @@ public class GoTo : State
 /// </summary>
 public class Patrol : State
 {
-    private NodeGraph start, end;
+    private NodeGraph start, end, goal;
     private GameObject agent;
     private NodeGraph[,] grid;
     private List<NodeGraph> path, fronter, visited;
@@ -299,14 +299,35 @@ public class Patrol : State
 
     public override void Start()
     {
-        fronter.Add(start);
+        goal = start;
+        fronter.Add(NearestNode(ref grid, agent.transform.position,gridSize));
         agent.transform.position = fronter[0].position;
-        path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref end);
+        path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
     }
 
     public override void Update()
     {
         Movement(ref path, ref agent, ref velocity, ref position, maxSpeed, maxForce, mass);
+
+        if(Vector3.Distance(agent.transform.position, goal.position)<=0.1f)
+        {
+            if(goal==start)
+            {
+                Restart();
+                goal = end;
+                fronter.Add(NearestNode(ref grid, agent.transform.position, gridSize));
+                agent.transform.position = fronter[0].position;
+                path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
+            }
+            else
+            {
+                Restart();
+                goal = start;
+                fronter.Add(NearestNode(ref grid, agent.transform.position, gridSize));
+                agent.transform.position = fronter[0].position;
+                path = BreathFirstSearchPathFinding(ref fronter, ref visited, ref goal);
+            }
+        }
     }
 
     public override void Exit()
@@ -327,5 +348,24 @@ public class Patrol : State
         fronter = null;
         visited.Clear();
         visited = null;
+    }
+
+    public void Restart()
+    {
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                if (grid[i, j] != null)
+                {
+                    grid[i, j].visited = false;
+                    grid[i, j].parent = null;
+                }
+            }
+        }
+
+        fronter.Clear();
+        visited.Clear();
+        path.Clear();
     }
 }

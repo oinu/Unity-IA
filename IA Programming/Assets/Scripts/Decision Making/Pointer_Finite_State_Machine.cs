@@ -123,24 +123,25 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         bulletsNode = grid[index, index2];
         #endregion
 
-        goal = firstAidNode; 
-
-        pjState = new GoTo(STATES.FIRSTAID, ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
-        pjState.Start();
+        goal = firstAidNode;
+        
 
         index = 0;
         for(int i=0; i<gridSize; i++)
         {
-            if(grid[0,i].position.z==pj.transform.position.z)
+            if(Mathf.Abs(grid[0,i].position.z - pj.transform.position.z) <= Mathf.Abs(grid[0, index].position.z - pj.transform.position.z))
             {
                 index = i;
-                break;
             }
         }
 
         startPatrolNode = grid[0, index];
-        endPatrolNode = grid[gridSize-1, index];
+        endPatrolNode = grid[gridSize - 1, index];
 
+
+        //pjState = new GoTo(STATES.FIRSTAID, ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
+        pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
+        pjState.Start();
     }
 
     // Update is called once per frame

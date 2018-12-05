@@ -138,9 +138,8 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         startPatrolNode = grid[0, index];
         endPatrolNode = grid[gridSize - 1, index];
 
-
-        //pjState = new GoTo(STATES.FIRSTAID, ref goal,ref pj,ref grid,maxSpeed,maxForce,mass,gridSize);
-        pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
+        //pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
+        pjState = new Fire(STATES.FIRE, ref pj, ref enemy, ref bullets);
         pjState.Start();
     }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum STATES { FIRSTAID,BULLETS,PATROL};
+public enum STATES { FIRSTAID,BULLETS,PATROL,FIRE};
 
 /// <summary>
 /// A class that represents a base State
@@ -367,5 +367,38 @@ public class Patrol : State
         fronter.Clear();
         visited.Clear();
         path.Clear();
+    }
+}
+
+/// <summary>
+/// The agent shoot a bullets
+/// </summary>
+public class Fire : State
+{
+    private GameObject agent, enemy, bullet;
+
+    public Fire (STATES aState, ref GameObject aAgent, ref GameObject aEnemy, ref GameObject aBullet)
+    {
+        agent = aAgent;
+        enemy = aEnemy;
+        bullet = aBullet;
+        CurrentState = aState;
+    }
+
+    public override void Start()
+    {
+        agent.transform.forward = enemy.transform.position - agent.transform.position;
+    }
+
+    public override void Update()
+    {
+        GameObject b = GameObject.Instantiate<GameObject>(bullet);
+        b.transform.position = agent.transform.position + agent.transform.forward.normalized;
+        b.transform.forward = agent.transform.forward;
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
     }
 }

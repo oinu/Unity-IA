@@ -48,4 +48,4 @@ How the agent make decision at what it does.
 
 ### Reaction Based
 * Hardcode Finite State Machine.
-* Point Style Finite State Machine (using Polymorfism).
+* Point Style Finite State Machine (using polymorfism).

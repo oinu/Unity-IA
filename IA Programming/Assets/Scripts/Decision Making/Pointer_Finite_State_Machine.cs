@@ -12,18 +12,19 @@ using UnityEngine;
 
 public class Pointer_Finite_State_Machine : MonoBehaviour {
     public GameObject pj;
-    public GameObject enemy;
+    public GameObject enemyPrefab;
     public GameObject area;
     public GameObject obstacle;
     public GameObject firstAidKit;
     public GameObject munitions;
-    public GameObject bullet;
     public int gridSize;
     public float maxSpeed, maxForce, mass;
 
+    private GameObject enemy;
     private NodeGraph[,] grid;
     private NodeGraph goal,firstAidNode, bulletsNode, startPatrolNode, endPatrolNode;
     private State pjState;
+    private float timeElipsed, randomTime; 
 
     // Use this for initialization
     void Start () {
@@ -139,33 +140,97 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         startPatrolNode = grid[0, index];
         endPatrolNode = grid[gridSize - 1, index];
 
-        //pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
-        pjState = new Fire(STATES.FIRE, ref pj, ref enemy, ref bullet);
+        pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
         pjState.Start();
+        pj.GetComponent<CollisionAgent>().munition = 0;
+        timeElipsed = -1;
+        randomTime = -1;
+
+        //Instantiate a new enemy
+        enemy = GameObject.Instantiate<GameObject>(enemyPrefab);
+
+        //Assign the new position
+        enemy.transform.position = new Vector3(Random.Range(-4, 5), 0.75f, -4.361f);
     }
 
     // Update is called once per frame
     void Update () {
         pjState.Update();
 
-        //Basic Change State
-        if(Vector3.Distance(pj.transform.position,goal.position)<=0.1f)
+        //Change the state of the agent
+        switch(pjState.CurrentState)
         {
-            
-            if (pjState.CurrentState==STATES.FIRSTAID)
-            {
-                pjState.Exit();
-                goal = bulletsNode;
-                pjState = new GoTo( STATES.BULLETS, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
-                pjState.Start();
-            }
-            else
-            {
-                pjState.Exit();
-                goal = firstAidNode;
-                pjState = new GoTo(STATES.FIRSTAID, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
-                pjState.Start();
-            }
+            case STATES.FIRSTAID:
+                if(Vector3.Distance(pj.transform.position, goal.position) <= 0.1f)
+                {
+                    pjState.Exit();
+                    pj.GetComponent<CollisionAgent>().life = 10;
+                    pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                break;
+
+            case STATES.BULLETS:
+                if (Vector3.Distance(pj.transform.position, goal.position) <= 0.1f)
+                {
+                    pjState.Exit();
+                    pj.GetComponent<CollisionAgent>().munition = 10;
+                    pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                break;
+
+            case STATES.PATROL:
+                if(enemy!=null && startPatrolNode.position.z -pj.transform.position.z<=0.2f && startPatrolNode.position.z - pj.transform.position.z >= -0.2f)
+                {
+                    pjState.Exit();
+                    pjState = new Fire(STATES.FIRE,ref pj,ref enemy);
+                    pjState.Start();
+                }
+                else if (pj.GetComponent<CollisionAgent>().life <= 5)
+                {
+                    pjState.Exit();
+                    goal = firstAidNode;
+                    pjState = new GoTo(STATES.FIRSTAID, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                else if (pj.GetComponent<CollisionAgent>().munition <= 5)
+                {
+                    pjState.Exit();
+                    goal = bulletsNode;
+                    pjState = new GoTo(STATES.BULLETS, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                break;
+
+            case STATES.FIRE:
+                if(pj.GetComponent<CollisionAgent>().life<=3)
+                {
+                    pjState.Exit();
+                    goal = firstAidNode;
+                    pjState = new GoTo(STATES.FIRSTAID, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                else if(pj.GetComponent<CollisionAgent>().munition == 0)
+                {
+                    pjState.Exit();
+                    goal = bulletsNode;
+                    pjState = new GoTo(STATES.BULLETS, ref goal, ref pj, ref grid, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                else if(enemy==null)
+                {
+                    pjState.Exit();
+                    pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
+                    pjState.Start();
+                }
+                break;
+                
+        }
+
+        if(enemy==null)
+        {
+            NewEnemy();
         }
     }
 
@@ -180,5 +245,30 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
             position.x >= (obstacle.transform.position.x - obstacle.transform.localScale.x / 2 - pj.transform.localScale.x / 2) &&
             position.z <= (obstacle.transform.position.z + obstacle.transform.localScale.z / 2 + pj.transform.localScale.z / 2) &&
             position.z >= (obstacle.transform.position.z - obstacle.transform.localScale.z / 2 - pj.transform.localScale.z / 2);
+    }
+
+    /// <summary>
+    /// Add a new enemy in a random position in a random time.
+    /// </summary>
+    private void NewEnemy()
+    {
+        //Generate a new random time elipsed
+        if (randomTime == -1)
+        {
+            randomTime = Random.Range(10.0f, 20.0f);
+            timeElipsed = Time.deltaTime;
+        }
+        else timeElipsed += Time.deltaTime;
+
+        //If the time is done
+        if(timeElipsed- Time.deltaTime>=randomTime)
+        {
+            //Instantiate a new enemy
+            enemy = GameObject.Instantiate<GameObject>(enemyPrefab);
+            
+            //Assign the new position
+            enemy.transform.position = new Vector3(Random.Range(-4, 5), 0.75f, -4.361f);
+            randomTime = -1;
+        }
     }
 }

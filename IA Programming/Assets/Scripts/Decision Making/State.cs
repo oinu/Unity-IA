@@ -375,38 +375,36 @@ public class Patrol : State
 /// </summary>
 public class Fire : State
 {
-    private GameObject agent, enemy, bullet;
-    private float timer;
+    private GameObject agent, enemy;
 
-    public Fire (STATES aState, ref GameObject aAgent, ref GameObject aEnemy, ref GameObject aBullet)
+    public Fire (STATES aState, ref GameObject aAgent, ref GameObject aEnemy)
     {
         agent = aAgent;
         enemy = aEnemy;
-        bullet = aBullet;
         CurrentState = aState;
-        timer = 1.0f;
     }
 
     public override void Start()
     {
         agent.transform.forward = enemy.transform.position - agent.transform.position;
+        enemy.transform.forward = -agent.transform.forward.normalized;
     }
 
     public override void Update()
     {
-        timer += Time.deltaTime;
-        if (timer- Time.deltaTime>=1)
+        if (enemy != null)
         {
-            GameObject b = GameObject.Instantiate<GameObject>(bullet);
-            b.transform.position = agent.transform.position + agent.transform.forward.normalized;
-            b.transform.forward = agent.transform.forward;
-            timer = Time.deltaTime;
+            enemy.GetComponent<CollisionAgent>().shooting = true;
+            agent.GetComponent<CollisionAgent>().shooting = true;
         }
-        
+        else if (agent.GetComponent<CollisionAgent>().shooting)
+        {
+            agent.GetComponent<CollisionAgent>().shooting = false;
+        }
     }
 
     public override void Exit()
     {
-        base.Exit();
+        agent.GetComponent<CollisionAgent>().shooting = false;
     }
 }

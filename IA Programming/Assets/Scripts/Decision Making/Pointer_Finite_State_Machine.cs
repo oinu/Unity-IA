@@ -16,7 +16,8 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
     public GameObject area;
     public GameObject obstacle;
     public GameObject firstAidKit;
-    public GameObject bullets;
+    public GameObject munitions;
+    public GameObject bullet;
     public int gridSize;
     public float maxSpeed, maxForce, mass;
 
@@ -111,15 +112,15 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         {
             for (int j = 0; j < gridSize; j++)
             {
-                if (grid[i, j] != null && Vector3.Distance(bullets.transform.position, grid[i, j].position)
-                    < Vector3.Distance(bullets.transform.position, grid[index, index2].position))
+                if (grid[i, j] != null && Vector3.Distance(munitions.transform.position, grid[i, j].position)
+                    < Vector3.Distance(munitions.transform.position, grid[index, index2].position))
                 {
                     index = i;
                     index2 = j;
                 }
             }
         }
-        bullets.transform.position = grid[index, index2].position;
+        munitions.transform.position = grid[index, index2].position;
         bulletsNode = grid[index, index2];
         #endregion
 
@@ -139,7 +140,7 @@ public class Pointer_Finite_State_Machine : MonoBehaviour {
         endPatrolNode = grid[gridSize - 1, index];
 
         //pjState = new Patrol(STATES.PATROL, ref pj, ref grid, ref startPatrolNode, ref endPatrolNode, maxSpeed, maxForce, mass, gridSize);
-        pjState = new Fire(STATES.FIRE, ref pj, ref enemy, ref bullets);
+        pjState = new Fire(STATES.FIRE, ref pj, ref enemy, ref bullet);
         pjState.Start();
     }
 

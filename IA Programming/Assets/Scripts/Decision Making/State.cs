@@ -376,6 +376,7 @@ public class Patrol : State
 public class Fire : State
 {
     private GameObject agent, enemy, bullet;
+    private float timer;
 
     public Fire (STATES aState, ref GameObject aAgent, ref GameObject aEnemy, ref GameObject aBullet)
     {
@@ -383,6 +384,7 @@ public class Fire : State
         enemy = aEnemy;
         bullet = aBullet;
         CurrentState = aState;
+        timer = 1.0f;
     }
 
     public override void Start()
@@ -392,9 +394,15 @@ public class Fire : State
 
     public override void Update()
     {
-        GameObject b = GameObject.Instantiate<GameObject>(bullet);
-        b.transform.position = agent.transform.position + agent.transform.forward.normalized;
-        b.transform.forward = agent.transform.forward;
+        timer += Time.deltaTime;
+        if (timer- Time.deltaTime>=1)
+        {
+            GameObject b = GameObject.Instantiate<GameObject>(bullet);
+            b.transform.position = agent.transform.position + agent.transform.forward.normalized;
+            b.transform.forward = agent.transform.forward;
+            timer = Time.deltaTime;
+        }
+        
     }
 
     public override void Exit()

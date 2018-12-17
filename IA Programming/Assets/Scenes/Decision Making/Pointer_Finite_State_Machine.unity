@@ -152,6 +152,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 65207580665893506, guid: 5f95669b6168e0f45b76fcbe44583f98,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 65207580665893506, guid: 5f95669b6168e0f45b76fcbe44583f98,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f95669b6168e0f45b76fcbe44583f98, type: 2}
   m_IsPrefabAsset: 0
@@ -588,7 +598,7 @@ GameObject:
   m_Component:
   - component: {fileID: 903688347}
   m_Layer: 0
-  m_Name: Bullets
+  m_Name: Munition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -727,7 +737,8 @@ MonoBehaviour:
   area: {fileID: 1103237457}
   obstacle: {fileID: 651869193}
   firstAidKit: {fileID: 497043327}
-  bullets: {fileID: 903688346}
+  munitions: {fileID: 903688346}
+  bullet: {fileID: 1049420105926590, guid: e032835e53cdf934b9fead28dec5b7b2, type: 2}
   gridSize: 20
   maxSpeed: 5
   maxForce: 100

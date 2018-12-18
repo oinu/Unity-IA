@@ -16,9 +16,9 @@ public class Bullet_Script : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        this.transform.position += this.transform.forward.normalized * Time.deltaTime;
+        this.transform.position += this.transform.forward.normalized*5.0f * Time.deltaTime;
         timer += Time.deltaTime;
-        if(timer>=7)
+        if(timer>=4)
         {
             Destroy(this.gameObject);
         }

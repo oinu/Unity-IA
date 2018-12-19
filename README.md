@@ -9,6 +9,7 @@ This repository contains:
   * Informed Search.
 * Decision Making.
   * Reaction Based.
+* Others
 
 ## Steering Behaviors
 It used for simulate a movement of the agent in a wolrd. 
@@ -49,3 +50,8 @@ How the agent make decision at what it does.
 ### Reaction Based
 * Hardcode Finite State Machine.
 * Point Style Finite State Machine (using polymorfism).
+
+## Others
+Implement other AI concept using or not the Unity AI tools.
+
+* Navigator Mesh (working).

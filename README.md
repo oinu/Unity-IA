@@ -54,4 +54,4 @@ How the agent make decision at what it does.
 ## Others
 Implement other AI concept using or not the Unity AI tools.
 
-* Navigator Mesh (working).
+* Navigator Mesh.

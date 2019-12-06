@@ -55,3 +55,4 @@ How the agent make decision at what it does.
 Implement other AI concept using or not the Unity AI tools.
 
 * Navigator Mesh.
+* Scene Generator (use grayscale image to generate a terrain).

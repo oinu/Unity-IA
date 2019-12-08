@@ -51,6 +51,9 @@ How the agent make decision at what it does.
 * Hardcode Finite State Machine.
 * Point Style Finite State Machine (using polymorfism).
 
+### AI Director
+It's a simple Director to spwan a enemys using a curve. The curve is a Unity AnimationCurve
+
 ## Others
 Implement other AI concept using or not the Unity AI tools.
 
